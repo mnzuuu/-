@@ -1,0 +1,74 @@
+<!-- home.html: 이벤트 생성 페이지로, 이벤트의 이름, 날짜, 시간대를 설정합니다. -->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>이벤트 생성</title>
+</head>
+<body>
+    <h1>이벤트 생성 페이지</h1>
+    <form id="create-event-form">
+        <label for="event-name">이벤트 이름:</label>
+        <input type="text" id="event-name" name="event-name" required><br><br>
+
+        <label for="event-date">날짜:</label>
+        <input type="date" id="event-date" name="event-date" required><br><br>
+
+        <label for="event-time">시간대:</label>
+        <input type="time" id="event-time-start" name="event-time-start" required>
+        <label for="event-time-end">부터</label>
+        <input type="time" id="event-time-end" name="event-time-end" required><br><br>
+
+        <button type="submit">이벤트 생성</button>
+    </form>
+
+    <script>
+        document.getElementById("create-event-form").onsubmit = async function(event) {
+            event.preventDefault(); // 기본 폼 제출 방지
+
+            console.log("폼이 제출되었습니다.");
+
+            
+            // 폼의 값을 가져옵니다
+            const eventName = document.getElementById("event-name").value;
+            const eventDate = document.getElementById("event-date").value;
+            const eventTimeStart = document.getElementById("event-time-start").value;
+            const eventTimeEnd = document.getElementById("event-time-end").value;
+            
+            console.log("이벤트 데이터:", { eventName, eventDate, eventTimeStart, eventTimeEnd });
+
+            // 서버로 보낼 데이터 객체 생성
+            const eventData = {
+                name: eventName,
+                date: eventDate,
+                startTime: eventTimeStart,
+                endTime: eventTimeEnd
+            };
+            
+            try {
+                // 서버로 POST 요청 전송
+                const response = await fetch('http://localhost:5000/api/events', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(eventData) // JSON 형태로 변환하여 전송
+                });
+    
+                if (response.ok) {
+                    alert("이벤트가 성공적으로 생성되었습니다.");
+                    // 이벤트 생성 후 시간 선택 페이지로 이동
+                    window.location.href = `http://localhost:5000/events/${data.eventId}/select`;
+                } else {
+                    const errorData = await response.json(); // 오류 메시지 확인
+                    alert("이벤트 생성에 실패했습니다.");
+                }
+            } catch (error) {
+                alert("서버와 통신 중 오류가 발생했습니다.");
+            }
+        };
+    </script>
+    
+</body>
+</html>

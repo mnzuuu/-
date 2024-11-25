@@ -1,0 +1,99 @@
+<!-- 시간 선택 페이지: 시간대 표를 나타내는 페이지로, 사용자가 설정한 날짜와 시간대를 표로 나타냅니다. -->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>시간 선택 페이지</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 10px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h1 id="event-name">이벤트 이름: 로딩 중...</h1>
+    <h2>날짜와 시간대를 선택하세요</h2>
+
+    <table id="time-table">
+        <thead>
+            <tr id="date-header">
+                <th>시간</th>
+            </tr>
+        </thead>
+        <tbody id="time-body">
+        </tbody>
+    </table>
+
+    <script>
+        // 페이지 로딩 시 URL에서 이벤트 ID 가져오기
+        const urlParams = new URLSearchParams(window.location.search);
+        const eventId = urlParams.get('eventId');
+
+        // 이벤트 데이터 가져오기
+        async function fetchEvent() {
+            try {
+                const response = await fetch(`http://localhost:5000/events/${eventId}`);
+                if (response.ok) {
+                    const event = await response.json();
+                    document.getElementById('event-name').textContent = `이벤트 이름: ${event.name}`;
+                    generateTimeTable(event);
+                } else {
+                    alert('이벤트 정보를 가져오는 중 오류가 발생했습니다.');
+                }
+            } catch (error) {
+                alert('서버와 통신 중 오류가 발생했습니다.');
+            }
+        }
+
+        // 시간대 테이블 생성
+        function generateTimeTable(event) {
+            const dateHeader = document.getElementById('date-header');
+            const timeBody = document.getElementById('time-body');
+
+            // 날짜 추가 (헤더 행에 날짜 삽입)
+            const dateCell = document.createElement('th');
+            dateCell.textContent = event.date;
+            dateHeader.appendChild(dateCell);
+
+            // 시간 범위 생성 (30분 간격)
+            const startTime = event.startTime;
+            const endTime = event.endTime;
+            let currentTime = startTime;
+
+            while (currentTime < endTime) {
+                const row = document.createElement('tr');
+                const timeCell = document.createElement('td');
+                timeCell.textContent = currentTime;
+                row.appendChild(timeCell);
+
+                const dateCell = document.createElement('td');
+                dateCell.textContent = '-'; // 선택 가능한 칸
+                row.appendChild(dateCell);
+
+                timeBody.appendChild(row);
+
+                // 시간 계산 (30분 단위 증가)
+                const [hours, minutes] = currentTime.split(':').map(Number);
+                const nextMinutes = minutes + 30;
+                if (nextMinutes >= 60) {
+                    currentTime = `${String(hours + 1).padStart(2, '0')}:00`;
+                } else {
+                    currentTime = `${String(hours).padStart(2, '0')}:${String(nextMinutes).padStart(2, '0')}`;
+                }
+            }
+        }
+
+        // 이벤트 데이터 가져오기 호출
+        fetchEvent();
+    </script>
+</body>
+</html>

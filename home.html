@@ -12,43 +12,150 @@
         <label for="event-name">이벤트 이름:</label>
         <input type="text" id="event-name" name="event-name" required><br><br>
 
-        <label for="event-date">날짜:</label>
+        <label for="event-date">날짜를 선택해주세요:</label>
         <input type="date" id="event-date" name="event-date" required><br><br>
 
-        <label for="event-time">시간대:</label>
-        <input type="time" id="event-time-start" name="event-time-start" required>
-        <label for="event-time-end">부터</label>
-        <input type="time" id="event-time-end" name="event-time-end" required><br><br>
+        <label for="event-time-period-start">시작하는 시간을 설정해주세요:</label>
+        <select id="event-time-period-start" name="event-time-period-start" required>
+            <option value="AM">오전</option>
+            <option value="PM">오후</option>
+        </select>
+        
+        <select id="event-hour-start" name="event-hour-start" required>
+            <!-- 1부터 12까지의 시 -->
+            <option value="01">01</option>
+            <option value="02">02</option>
+            <option value="03">03</option>
+            <option value="04">04</option>
+            <option value="05">05</option>
+            <option value="06">06</option>
+            <option value="07">07</option>
+            <option value="08">08</option>
+            <option value="09">09</option>
+            <option value="10">10</option>
+            <option value="11">11</option>
+            <option value="12">12</option>
+        </select><br><br>
+        
+        <label for="event-time-period-end">끝나는 시간을 설정해주세요:</label>
+        <select id="event-time-period-end" name="event-time-period-end" required>
+            <option value="AM">오전</option>
+            <option value="PM">오후</option>
+        </select>
+        
+        <select id="event-hour-end" name="event-hour-end" required>
+            <!-- 1부터 12까지의 시 -->
+            <option value="01">01</option>
+            <option value="02">02</option>
+            <option value="03">03</option>
+            <option value="04">04</option>
+            <option value="05">05</option>
+            <option value="06">06</option>
+            <option value="07">07</option>
+            <option value="08">08</option>
+            <option value="09">09</option>
+            <option value="10">10</option>
+            <option value="11">11</option>
+            <option value="12">12</option>
+        </select><br><br>
 
         <button type="submit">이벤트 생성</button>
     </form>
 
     <script>
+        // 오늘 날짜를 yyyy-mm-dd 형식으로 구하기
+        function getTodayDate() {
+            const today = new Date();
+            const year = today.getFullYear();
+            const month = String(today.getMonth() + 1).padStart(2, '0');
+            const day = String(today.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+
+        // 페이지 로딩 시 날짜 입력 필드의 최소값 설정
+        document.addEventListener('DOMContentLoaded', () => {
+            const eventDateInput = document.getElementById('event-date');
+            eventDateInput.min = getTodayDate();  // 오늘 이후 날짜만 선택 가능하게 설정
+        });     
+
+        // 시간을 24시간 형식으로 변환
+        function getTimeValue(period, hour) {
+            let hourNumber = parseInt(hour, 10);
+            if (period === "PM" && hourNumber !== 12) {
+                hourNumber += 12; // 오후이면 12를 더함 (단, 12시는 그대로 유지)
+            } else if (period === "AM" && hourNumber === 12) {
+                hourNumber = 0; // 오전 12시는 0으로 설정
+            }
+            return hourNumber;
+        }
+
+        document.getElementById("event-hour-end").addEventListener('change', updateEndTimeOptions);
+        document.getElementById("event-time-period-end").addEventListener('change', updateEndTimeOptions);
+        
+        document.getElementById("event-hour-start").addEventListener('change', updateEndTimeOptions);
+        document.getElementById("event-time-period-start").addEventListener('change', updateEndTimeOptions);
+        
+        function updateEndTimeOptions() {
+            const periodStart = document.getElementById("event-time-period-start").value;
+            const hourStart = document.getElementById("event-hour-start").value;
+        
+            const startTimeValue = getTimeValue(periodStart, hourStart);
+            const endPeriodSelect = document.getElementById("event-time-period-end");
+            const endHourSelect = document.getElementById("event-hour-end");
+        
+            // 종료 시간의 선택지를 업데이트
+            let endOptions = Array.from(endHourSelect.options);
+            endOptions.forEach(option => {
+                const optionPeriod = endPeriodSelect.value;
+                const optionHour = option.value;
+                const endTimeValue = getTimeValue(optionPeriod, optionHour);
+        
+                if (periodStart === "AM" && optionPeriod === "PM") {
+                    // 오전 시작 시간이면 오후의 모든 시간이 허용됨
+                    option.disabled = false;
+                } else if (periodStart === optionPeriod && endTimeValue <= startTimeValue) {
+                    // 같은 오전/오후일 경우 시작 시간 이후의 시간만 허용
+                    option.disabled = true;
+                } else if (periodStart === "PM" && optionPeriod === "AM") {
+                    // 오후 시작 시간 후 오전을 선택할 수 없음
+                    option.disabled = true;
+                } else {
+                    // 그 외의 경우 허용
+                    option.disabled = false;
+                }
+            });
+        }
+
+        // 폼 제출 시 서버로 데이터를 전송
         document.getElementById("create-event-form").onsubmit = async function(event) {
             event.preventDefault(); // 기본 폼 제출 방지
 
-            console.log("폼이 제출되었습니다.");
-
-            
             // 폼의 값을 가져옵니다
             const eventName = document.getElementById("event-name").value;
             const eventDate = document.getElementById("event-date").value;
-            const eventTimeStart = document.getElementById("event-time-start").value;
-            const eventTimeEnd = document.getElementById("event-time-end").value;
-            
-            console.log("이벤트 데이터:", { eventName, eventDate, eventTimeStart, eventTimeEnd });
+
+            const periodStart = document.getElementById("event-time-period-start").value;
+            const hourStart = document.getElementById("event-hour-start").value;
+            const startTime = `${periodStart} ${hourStart}`;
+
+            const periodEnd = document.getElementById("event-time-period-end").value;
+            const hourEnd = document.getElementById("event-hour-end").value;
+            const endTime = `${periodEnd} ${hourEnd}`;
+
+            console.log("선택된 시작 시간:", startTime);
+            console.log("선택된 종료 시간:", endTime);
 
             // 서버로 보낼 데이터 객체 생성
             const eventData = {
                 name: eventName,
                 date: eventDate,
-                startTime: eventTimeStart,
-                endTime: eventTimeEnd
+                startTime: startTime,
+                endTime: endTime
             };
             
             try {
                 // 서버로 POST 요청 전송
-                const response = await fetch('http://localhost:5000/api/events', {
+                const response = await fetch(`http://localhost:5000/api/events`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -57,11 +164,12 @@
                 });
     
                 if (response.ok) {
+                    const data = await response.json();
                     alert("이벤트가 성공적으로 생성되었습니다.");
-                    // 이벤트 생성 후 시간 선택 페이지로 이동
+                    console.log(data);
+                    // 이벤트 생성 후 시간 선택 페이지로 이동 (eventId를 URL 쿼리 파라미터로 추가)
                     window.location.href = `http://localhost:5000/events/${data.eventId}/select`;
                 } else {
-                    const errorData = await response.json(); // 오류 메시지 확인
                     alert("이벤트 생성에 실패했습니다.");
                 }
             } catch (error) {
@@ -69,6 +177,5 @@
             }
         };
     </script>
-    
 </body>
 </html>

@@ -2,6 +2,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
+const path = require('path');
 
 const app = express();
 
@@ -29,7 +30,7 @@ const cors = require('cors');
 app.use(cors({
   origin: '*', // 모든 도메인 허용
   methods: ['GET', 'POST', 'PUT', 'DELETE'], // 사용할 HTTP 메서드 설정
-  allowedHeaders: ['Content-Type']
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'], // 필요한 헤더들 추가
 }));
 // 이벤트 생성 라우트
 app.post('/api/events', async (req, res) => {
@@ -53,14 +54,24 @@ app.post('/api/events', async (req, res) => {
   }
 });
 
+// 특정 이벤트 시간 선택 페이지 제공 라우트 (HTML 페이지 제공)
+app.get('/events/select', (req, res) => {
+  res.sendFile(path.join(__dirname, 'select.html'));
+});
+
 // 특정 이벤트 시간 선택 페이지로 이동
 app.get('/events/:id/select', async (req, res) => {
   const { id } = req.params;
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(400).send('잘못된 이벤트 ID입니다.');
+  }
   try {
     const event = await Event.findById(id);
     if (event) {
-      res.status(200).sendFile(path.join(__dirname, 'select.html'));
+      console.log("이벤트 조회 성공:", event);
+      res.status(200).sendFile(__dirname + '/select.html');
     } else {
+      console.error("이벤트를 찾을 수 없습니다:", id);
       res.status(404).send('이벤트를 찾을 수 없습니다.');
     }
   } catch (error) {
@@ -68,6 +79,29 @@ app.get('/events/:id/select', async (req, res) => {
     res.status(500).send('이벤트 조회 중 오류가 발생했습니다.');
   }
 });
+
+
+// 특정 이벤트 조회 라우트 (JSON 데이터 응답)
+app.get('/api/events/:id', async (req, res) => {
+  const { id } = req.params;
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(400).json({ message: '잘못된 이벤트 ID입니다.' });
+  }
+  try {
+    const event = await Event.findById(id);
+    if (event) {
+      console.log("이벤트 조회 성공:", event);
+      res.status(200).json(event);
+    } else {
+      console.error("이벤트를 찾을 수 없습니다:", id);
+      res.status(404).json({ message: '이벤트를 찾을 수 없습니다.' });
+    }
+  } catch (error) {
+    console.error("이벤트 조회 중 오류 발생:", error);
+    res.status(500).json({ message: '이벤트 조회 중 오류가 발생했습니다.' });
+  }
+});
+
 
 // 이벤트 조회 라우트
 app.get('/api/events', async (req, res) => {

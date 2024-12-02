@@ -36,12 +36,13 @@
     <script>
         // 페이지 로딩 시 URL에서 이벤트 ID 가져오기
         const urlParams = new URLSearchParams(window.location.search);
-        const eventId = urlParams.get('eventId');
-
+        const eventId = window.location.pathname.split('/')[2]; // 이벤트 ID 추출
+        console.log("추출된 이벤트 ID:", eventId);
+    
         // 이벤트 데이터 가져오기
         async function fetchEvent() {
             try {
-                const response = await fetch(`http://localhost:5000/events/${eventId}`);
+                const response = await fetch(`http://localhost:5000/api/events/${eventId}`);
                 if (response.ok) {
                     const event = await response.json();
                     document.getElementById('event-name').textContent = `이벤트 이름: ${event.name}`;
@@ -50,48 +51,70 @@
                     alert('이벤트 정보를 가져오는 중 오류가 발생했습니다.');
                 }
             } catch (error) {
+                console.error("이벤트 정보를 가져오는 중 오류 발생:", error);
                 alert('서버와 통신 중 오류가 발생했습니다.');
             }
         }
-
-        // 시간대 테이블 생성
+    
         function generateTimeTable(event) {
             const dateHeader = document.getElementById('date-header');
             const timeBody = document.getElementById('time-body');
-
+        
             // 날짜 추가 (헤더 행에 날짜 삽입)
             const dateCell = document.createElement('th');
             dateCell.textContent = event.date;
             dateHeader.appendChild(dateCell);
-
+        
+            // 시작 시간과 종료 시간 변환
+            const startPeriod = event.startTime.split(' ')[0]; // 'AM' 또는 'PM'
+            const startHour = parseInt(event.startTime.split(' ')[1], 10);
+            const endPeriod = event.endTime.split(' ')[0];
+            const endHour = parseInt(event.endTime.split(' ')[1], 10);
+        
+            let currentHour = startHour;
+            let currentMinutes = 0; // 분 단위 추가
+            let currentPeriod = startPeriod;
+        
             // 시간 범위 생성 (30분 간격)
-            const startTime = event.startTime;
-            const endTime = event.endTime;
-            let currentTime = startTime;
-
-            while (currentTime < endTime) {
+            while (true) {
                 const row = document.createElement('tr');
+        
                 const timeCell = document.createElement('td');
-                timeCell.textContent = currentTime;
+                const minutesString = currentMinutes === 0 ? '00' : '30';
+                timeCell.textContent = `${currentPeriod} ${currentHour.toString().padStart(2, '0')}:${minutesString}`;
                 row.appendChild(timeCell);
-
+        
                 const dateCell = document.createElement('td');
                 dateCell.textContent = '-'; // 선택 가능한 칸
                 row.appendChild(dateCell);
-
+        
                 timeBody.appendChild(row);
-
-                // 시간 계산 (30분 단위 증가)
-                const [hours, minutes] = currentTime.split(':').map(Number);
-                const nextMinutes = minutes + 30;
-                if (nextMinutes >= 60) {
-                    currentTime = `${String(hours + 1).padStart(2, '0')}:00`;
+        
+                // 30분 단위로 시간 증가
+                if (currentMinutes === 0) {
+                    currentMinutes = 30;
                 } else {
-                    currentTime = `${String(hours).padStart(2, '0')}:${String(nextMinutes).padStart(2, '0')}`;
+                    currentMinutes = 0;
+                    currentHour += 1;
+        
+                    if (currentHour === 12) {
+                        // AM/PM 전환
+                        currentPeriod = currentPeriod === 'AM' ? 'PM' : 'AM';
+                    } else if (currentHour === 13) {
+                        // 12시간 형식 유지
+                        currentHour = 1;
+                    }
+                }
+        
+                // 종료 조건
+                if (currentPeriod === endPeriod && currentHour >= endHour && currentMinutes === 0) {
+                    break;
                 }
             }
         }
-
+        
+        
+    
         // 이벤트 데이터 가져오기 호출
         fetchEvent();
     </script>

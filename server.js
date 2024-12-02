@@ -19,7 +19,7 @@ mongoose.connect('mongodb+srv://alswn235:0302@cluster1.aerc0.mongodb.net/eventDB
 // 이벤트 스키마 및 모델 생성
 const eventSchema = new mongoose.Schema({
   name: String,
-  date: String,
+  dates: [String],
   startTime: String,
   endTime: String
 });
@@ -34,13 +34,13 @@ app.use(cors({
 }));
 // 이벤트 생성 라우트
 app.post('/api/events', async (req, res) => {
-  const { name, date, startTime, endTime } = req.body;
+  const { name, dates, startTime, endTime } = req.body;
 
   // 요청 데이터 로그 추가
-  console.log("이벤트 생성 요청 데이터:", { name, date, startTime, endTime });
+  console.log("이벤트 생성 요청 데이터:", { name, dates, startTime, endTime });
 
   try {
-    const newEvent = new Event({ name, date, startTime, endTime });
+    const newEvent = new Event({ name, dates, startTime, endTime });
     await newEvent.save();
 
     // 저장된 이벤트 로그 추가

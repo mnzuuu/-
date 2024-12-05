@@ -32,6 +32,42 @@ app.use(cors({
   methods: ['GET', 'POST', 'PUT', 'DELETE'], // 사용할 HTTP 메서드 설정
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'], // 필요한 헤더들 추가
 }));
+
+// 선택된 시간대 스키마 및 모델 정의
+const selectedTimeSchema = new mongoose.Schema({
+  eventId: String,  // 이벤트 ID
+  selectedSlots: {
+    type: Map,
+    of: [String], // 날짜별로 시간 배열을 저장
+    required: true 
+  }
+});
+const SelectedTime = mongoose.model('selected_times', selectedTimeSchema);
+
+
+// 시간대 저장 라우트
+app.post('/api/save-selected-slots', async (req, res) => {
+  const { eventId, selectedSlots } = req.body;
+  
+  try {
+    let selectedTime = await SelectedTime.findOne({ eventId });
+    
+    if (selectedTime) {
+        // 기존 데이터가 있을 경우 업데이트
+        selectedTime.selectedSlots = selectedSlots;
+    } else {
+        // 새로운 데이터 생성
+        selectedTime = new SelectedTime({ eventId, selectedSlots });
+    }
+
+    await selectedTime.save();
+    res.status(200).json({ message: '선택된 시간대가 성공적으로 저장되었습니다.' });
+} catch (error) {
+    console.error('시간대 저장 중 오류 발생:', error);
+    res.status(500).json({ message: '시간대 저장 중 오류가 발생했습니다.' });
+}
+});
+
 // 이벤트 생성 라우트
 app.post('/api/events', async (req, res) => {
   const { name, dates, startTime, endTime } = req.body;

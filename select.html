@@ -17,6 +17,14 @@
             padding: 10px;
             text-align: center;
         }
+        .selectable-cell {
+            cursor: pointer;
+            background-color: #f0f0f0; /* 기본 배경색 */
+        }
+        .selectable-cell.selected {
+            background-color: #4caf50; /* 선택된 상태를 표시하는 배경색 */
+            color: #fff;
+        }
     </style>
 </head>
 <body>
@@ -33,129 +41,205 @@
         </tbody>
     </table>
 
+    <!-- 버튼을 테이블 아래에 배치 -->
+    <button id="save-button">선택된 시간대 저장</button>
+
     <script>
-        // 페이지 로딩 시 URL에서 이벤트 ID 가져오기
-        const urlParams = new URLSearchParams(window.location.search);
+        document.addEventListener('DOMContentLoaded', function() {
+            let isDragging = false;
+            let startCell = null;
+            const selectedCells = new Set();
+
+            // 페이지 로딩 시 URL에서 이벤트 ID 가져오기
+            const urlParams = new URLSearchParams(window.location.search);
             const eventId = window.location.pathname.split('/')[2]; // 이벤트 ID 추출
-        console.log("추출된 이벤트 ID:", eventId);
-    
-        // 이벤트 데이터 가져오기
-async function fetchEvent() {
-    try {
-        const response = await fetch(`http://localhost:5000/api/events/${eventId}`);
-        if (response.ok) {
-            const event = await response.json();
-            console.log("이벤트 데이터:", event);
-            document.getElementById('event-name').textContent = `이벤트 이름: ${event.name}`;
-            if (event.dates && event.dates.length > 0) {
-                generateTimeTable(event);
-            } else {
-                console.error("이벤트에 날짜 데이터가 없습니다.");
-                alert("이벤트에 날짜 정보가 없습니다.");
+            console.log("추출된 이벤트 ID:", eventId);
+
+            // 이벤트 데이터 가져오기
+            async function fetchEvent() {
+                try {
+                    const response = await fetch(`http://localhost:5000/api/events/${eventId}`);
+                    if (response.ok) {
+                        const event = await response.json();
+                        console.log("이벤트 데이터:", event);
+                        document.getElementById('event-name').textContent = `이벤트 이름: ${event.name}`;
+                        if (event.dates && event.dates.length > 0) {
+                            generateTimeTable(event);
+                        } else {
+                            console.error("이벤트에 날짜 데이터가 없습니다.");
+                            alert("이벤트에 날짜 정보가 없습니다.");
+                        }
+                    } else {
+                        alert('이벤트 정보를 가져오는 중 오류가 발생했습니다.');
+                    }
+                } catch (error) {
+                    console.error("이벤트 정보를 가져오는 중 오류 발생:", error);
+                    alert('서버와 통신 중 오류가 발생했습니다.');
+                }
             }
-        } else {
-            alert('이벤트 정보를 가져오는 중 오류가 발생했습니다.');
-        }
-    } catch (error) {
-        console.error("이벤트 정보를 가져오는 중 오류 발생:", error);
-        alert('서버와 통신 중 오류가 발생했습니다.');
-    }
-}
-    
-function generateTimeTable(event) {
-    const dateHeader = document.getElementById('date-header');
-    const timeBody = document.getElementById('time-body');
 
-    if (!dateHeader || !timeBody) {
-        console.error("dateHeader 또는 timeBody 요소를 찾을 수 없습니다.");
-        return;
-    }
+            function generateTimeTable(event) {
+                const dateHeader = document.getElementById('date-header');
+                const timeBody = document.getElementById('time-body');
 
-    dateHeader.innerHTML = "<th>시간</th>"; // 기존 헤더 초기화
-    timeBody.innerHTML = ""; // 기존 시간표 본문 초기화
+                if (!dateHeader || !timeBody) {
+                    console.error("dateHeader 또는 timeBody 요소를 찾을 수 없습니다.");
+                    return;
+                }
 
-    // 날짜들 추가 (헤더 행에 날짜 삽입)
-event.dates.forEach(date => {
-    try {
-        const formattedDate = new Date(date).toLocaleDateString('ko-KR', { weekday: 'short', year: 'numeric', month: 'long', day: 'numeric' });
-        const dateCell = document.createElement('th');
-        dateCell.textContent = formattedDate;
-        dateHeader.appendChild(dateCell);
-    } catch (error) {
-        console.error("날짜 형식 변환 중 오류 발생:", error);
-    }
-});
+                dateHeader.innerHTML = "<th>시간</th>"; // 기존 헤더 초기화
+                timeBody.innerHTML = ""; // 기존 시간표 본문 초기화
 
-// 시작 시간과 종료 시간 변환
-const startTimeParts = event.startTime.split(' ');
-if (startTimeParts.length !== 2) {
-    console.error("시작 시간 형식 오류:", event.startTime);
-    return; // 잘못된 시간 형식인 경우 함수 종료
-}
+                // 날짜들 추가 (헤더 행에 날짜 삽입)
+                event.dates.forEach(date => {
+                    try {
+                        const formattedDate = new Date(date).toLocaleDateString('ko-KR', { weekday: 'short', year: 'numeric', month: 'long', day: 'numeric' });
+                        const dateCell = document.createElement('th');
+                        dateCell.textContent = formattedDate;
+                        dateHeader.appendChild(dateCell);
+                    } catch (error) {
+                        console.error("날짜 형식 변환 중 오류 발생:", error);
+                    }
+                });
 
-const startPeriod = startTimeParts[1];
-const [startHour, startMinutes] = startTimeParts[0].split(':').map(num => parseInt(num, 10));
+                // 시작 시간과 종료 시간 변환
+                const startTimeParts = event.startTime.split(' ');
+                if (startTimeParts.length !== 2) {
+                    console.error("시작 시간 형식 오류:", event.startTime);
+                    return; // 잘못된 시간 형식인 경우 함수 종료
+                }
 
-// 종료 시간 변환
-const endTimeParts = event.endTime.split(' ');
-if (endTimeParts.length !== 2) {
-    console.error("종료 시간 형식 오류:", event.endTime);
-    return; // 잘못된 시간 형식인 경우 함수 종료
-}
+                const startPeriod = startTimeParts[1];
+                const [startHour, startMinutes] = startTimeParts[0].split(':').map(num => parseInt(num, 10));
 
-const endPeriod = endTimeParts[1];
-const [endHour, endMinutes] = endTimeParts[0].split(':').map(num => parseInt(num, 10));
+                // 종료 시간 변환
+                const endTimeParts = event.endTime.split(' ');
+                if (endTimeParts.length !== 2) {
+                    console.error("종료 시간 형식 오류:", event.endTime);
+                    return; // 잘못된 시간 형식인 경우 함수 종료
+                }
 
-// 변수를 선언하고 나서 로그 출력
-let currentHour = startHour;
-let currentMinutes = startMinutes;
-let currentPeriod = startPeriod;
+                const endPeriod = endTimeParts[1];
+                const [endHour, endMinutes] = endTimeParts[0].split(':').map(num => parseInt(num, 10));
 
-console.log(currentHour, currentMinutes, currentPeriod);
+                // 변수를 선언하고 나서 로그 출력
+                let currentHour = startHour;
+                let currentMinutes = startMinutes;
+                let currentPeriod = startPeriod;
 
-    // 시간 범위 생성 (30분 간격)
-    while (true) {
-        const row = document.createElement('tr');
+                console.log(currentHour, currentMinutes, currentPeriod);
 
-        const timeCell = document.createElement('td');
-        const minutesString = currentMinutes === 0 ? '00' : '30';
-        timeCell.textContent = `${currentPeriod} ${currentHour.toString().padStart(2, '0')}:${minutesString}`;
-        row.appendChild(timeCell);
+                // 시간 범위 생성 (30분 간격)
+                while (true) {
+                    const row = document.createElement('tr');
 
-        // 각 날짜에 대한 선택 가능한 칸 생성
-        event.dates.forEach(() => {
-            const dateCell = document.createElement('td');
-            dateCell.className = 'selectable-cell'; // 선택 가능한 칸 스타일을 적용하기 위한 클래스
-            row.appendChild(dateCell);
+                    const timeCell = document.createElement('td');
+                    const minutesString = currentMinutes === 0 ? '00' : '30';
+                    timeCell.textContent = `${currentPeriod} ${currentHour.toString().padStart(2, '0')}:${minutesString}`;
+                    row.appendChild(timeCell);
+
+                    // 각 날짜에 대한 선택 가능한 칸 생성
+                    event.dates.forEach(() => {
+                        const dateCell = document.createElement('td');
+                        dateCell.className = 'selectable-cell'; // 선택 가능한 칸 스타일을 적용하기 위한 클래스
+                        row.appendChild(dateCell);
+                    });
+
+                    timeBody.appendChild(row);
+
+                    // 30분 단위로 시간 증가
+                    if (currentMinutes === 0) {
+                        currentMinutes = 30;
+                    } else {
+                        currentMinutes = 0;
+                        currentHour += 1;
+
+                        if (currentHour === 12) {
+                            currentPeriod = currentPeriod === 'AM' ? 'PM' : 'AM';
+                        } else if (currentHour === 13) {
+                            currentHour = 1;
+                        }
+                    }
+
+                    // 종료 조건
+                    if (currentPeriod === endPeriod && currentHour === endHour && currentMinutes === endMinutes) {
+                        break;
+                    }
+                }
+            }
+
+            // 셀 클릭 및 드래그 이벤트 등록
+            document.getElementById('time-table').addEventListener('mousedown', function(e) {
+                if (e.target.classList.contains('selectable-cell')) {
+                    isDragging = true;
+                    dragStartState = !e.target.classList.contains('selected');
+                    e.preventDefault();
+                    toggleCellSelection(e.target);
+                }
+            });
+
+            document.getElementById('time-table').addEventListener('mousemove', function(e) {
+                if (isDragging && e.target.classList.contains('selectable-cell')) {
+                    if (dragStartState) {
+                        e.target.classList.add('selected');
+                        selectedCells.add(e.target.dataset.timeSlot);
+                    } else {
+                        e.target.classList.remove('selected');
+                        selectedCells.delete(e.target.dataset.timeSlot);
+                    }
+                }
+            });
+
+            document.addEventListener('mouseup', function(e) {
+                isDragging = false;
+                dragStartState = null;
+            });
+
+            // 셀 클릭 시 선택 상태 토글 (mousedown과 구분)
+            document.getElementById('time-table').addEventListener('click', function(e) {
+                if (e.target.classList.contains('selectable-cell') && !isDragging) {
+                    toggleCellSelection(e.target);
+                }
+            });
+
+            // 셀의 선택 상태를 토글하는 함수
+            function toggleCellSelection(cell) {
+                cell.classList.toggle('selected');
+                const timeSlot = cell.dataset.timeSlot;
+                if (cell.classList.contains('selected')) {
+                    selectedCells.add(timeSlot);
+                } else {
+                    selectedCells.delete(timeSlot);
+                }
+                console.log('선택된 시간대:', Array.from(selectedCells));
+            }
+
+            // 저장 버튼 클릭 시 선택된 데이터 서버로 전송
+            document.getElementById('save-button').addEventListener('click', async function() {
+                try {
+                    const response = await fetch('http://localhost:5000/api/save-selected-slots', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ selectedSlots: Array.from(selectedCells) })
+                    });
+
+                    if (response.ok) {
+                        alert('선택된 시간대가 성공적으로 저장되었습니다.');
+                    } else {
+                        alert('시간대 저장에 실패했습니다.');
+                    }
+                } catch (error) {
+                    console.error('시간대 저장 중 오류 발생:', error);
+                    alert('서버와 통신 중 오류가 발생했습니다.');
+                }
+            });
+
+            // 이벤트 데이터 가져오기 호출
+            fetchEvent();
         });
-
-        timeBody.appendChild(row);
-
-        // 30분 단위로 시간 증가
-        if (currentMinutes === 0) {
-            currentMinutes = 30;
-        } else {
-            currentMinutes = 0;
-            currentHour += 1;
-
-            if (currentHour === 12) {
-                currentPeriod = currentPeriod === 'AM' ? 'PM' : 'AM';
-            } else if (currentHour === 13) {
-                currentHour = 1;
-            }
-        }
-
-        // 종료 조건
-        if (currentPeriod === endPeriod && currentHour === endHour && currentMinutes === endMinutes) {
-            break;
-        }
-    }
-}
-        
-        
-    
-        // 이벤트 데이터 가져오기 호출
-        fetchEvent();
     </script>
 </body>
 </html>
+

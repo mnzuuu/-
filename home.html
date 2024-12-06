@@ -104,6 +104,8 @@
                     return;
                 }
 
+                selectedDates.sort((a, b) => new Date(a) - new Date(b));
+
                 const startTime = document.getElementById("event-start-time").value;
                 const endTime = document.getElementById("event-end-time").value;
 

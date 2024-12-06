@@ -21,14 +21,25 @@
             background-color: #f0f0f0; /* 기본 배경색 */
         }
         .selectable-cell.selected {
-            background-color: #4caf50; /* 선택된 상태를 표시하는 배경색 */
+            background-color: lightpink; /* 선택된 상태를 표시하는 배경색 */
             color: #fff;
+        }
+        #login-form {
+            margin-bottom: 20px;
         }
     </style>
 </head>
 <body>
     <h1 id="event-name">이벤트 이름: 로딩 중...</h1>
     <h2>날짜와 시간대를 선택하세요</h2>
+
+    <div id="login-form">
+        <label for="nickname">닉네임:</label>
+        <input type="text" id="nickname" required>
+        <label for="password">비밀번호 (4자리 숫자):</label>
+        <input type="password" id="password" maxlength="4" required>
+        <button id="login-button">로그인</button>
+    </div>
 
     <table id="time-table">
         <thead>
@@ -40,19 +51,34 @@
         </tbody>
     </table>
 
-    <!-- 버튼을 테이블 아래에 배치 -->
-    <button id="save-button">선택된 시간대 저장</button>
+    <button id="save-button" disabled>선택된 시간대 저장</button>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             let isDragging = false;
             let dragStartState = false;
             const selectedSlots = {};
+            let isLoggedIn = false;
 
             // 페이지 로딩 시 URL에서 이벤트 ID 가져오기
             const urlParams = new URLSearchParams(window.location.search);
             const eventId = window.location.pathname.split('/')[2]; // 이벤트 ID 추출
             console.log("추출된 이벤트 ID:", eventId);
+
+            // 로그인 버튼 클릭 시
+            document.getElementById('login-button').addEventListener('click', function() {
+                const nickname = document.getElementById('nickname').value;
+                const password = document.getElementById('password').value;
+
+                if (nickname && password.length === 4 && !isNaN(password)) {
+                    isLoggedIn = true;
+                    document.getElementById('login-form').style.display = 'none';
+                    document.getElementById('save-button').disabled = false;
+                    alert('로그인에 성공했습니다! 시간대를 선택할 수 있습니다.');
+                } else {
+                    alert('유효한 닉네임과 4자리 숫자 비밀번호를 입력해주세요.');
+                }
+            });
 
             // 이벤트 데이터 가져오기
             async function fetchEvent() {
@@ -72,8 +98,8 @@
                         document.getElementById('event-name').textContent = `이벤트 이름: ${event.name}`;
                         if (event.dates && event.dates.length > 0) {
                             generateTimeTable(event);
+                            console.log("저장된 선택된 시간대 로드:", event.selectedSlots);
                             if (event.selectedSlots) {
-                                console.log("저장된 선택된 시간대 로드:", event.selectedSlots);
                                 applySelectedSlots(event.selectedSlots);
                             }
                         } else {
@@ -186,7 +212,6 @@
                     times.forEach(time => {
                         const cell = document.querySelector(`.selectable-cell[data-date="${date.trim()}"][data-time="${time.trim()}"]`);
                         if (cell) {
-                            console.log("선택된 셀 찾음:", cell);
                             cell.classList.add('selected');
                         } else {
                             console.warn("선택된 셀을 찾을 수 없음:", date.trim(), time.trim());
@@ -198,6 +223,10 @@
             // 셀 클릭 및 드래그 이벤트 등록
             document.getElementById('time-table').addEventListener('mousedown', function(e) {
                 if (e.target.classList.contains('selectable-cell')) {
+                    if (!isLoggedIn) {
+                        alert('로그인 후에 시간대를 선택할 수 있습니다.');
+                        return;
+                    }
                     isDragging = true;
                     dragStartState = !e.target.classList.contains('selected');
                     e.preventDefault();
@@ -207,12 +236,15 @@
 
             document.getElementById('time-table').addEventListener('mousemove', function(e) {
                 if (isDragging && e.target.classList.contains('selectable-cell')) {
+                    if (!isLoggedIn) {
+                        alert('로그인 후에 시간대를 선택할 수 있습니다.');
+                        return;
+                    }
                     if (dragStartState) {
                         e.target.classList.add('selected');
                     } else {
                         e.target.classList.remove('selected');
                     }
-                    updateSelectedSlots(e.target);
                 }
             });
 
@@ -224,49 +256,52 @@
             // 셀 클릭 시 선택 상태 토글
             document.getElementById('time-table').addEventListener('click', function(e) {
                 if (e.target.classList.contains('selectable-cell') && !isDragging) {
+                    if (!isLoggedIn) {
+                        alert('로그인 후에 시간대를 선택할 수 있습니다.');
+                        return;
+                    }
                     toggleCellSelection(e.target);
                 }
             });
 
             function toggleCellSelection(cell) {
                 cell.classList.toggle('selected');
-                updateSelectedSlots(cell);
             }
 
-            function updateSelectedSlots(cell) {
-                const date = cell.dataset.date;
-                const time = cell.dataset.time;
-
-                if (!selectedSlots[date]) {
-                    selectedSlots[date] = [];
+            document.getElementById('save-button').addEventListener('click', async function () {
+                if (!isLoggedIn) {
+                    alert('로그인 후에 시간대를 저장할 수 있습니다.');
+                    return;
                 }
-
-                if (cell.classList.contains('selected')) {
-                    if (!selectedSlots[date].includes(time)) {
-                        selectedSlots[date].push(time);
-                    }
-                } else {
-                    const index = selectedSlots[date].indexOf(time);
-                    if (index > -1) {
-                        selectedSlots[date].splice(index, 1);
-                    }
-                }
-
-            }
-
-            document.getElementById('save-button').addEventListener('click', async function() {
                 try {
-                    const response = await fetch('http://localhost:5000/api/save-selected-slots', {
+                    // 현재 선택된 셀을 기준으로 selectedSlots 데이터 업데이트
+                    const cells = document.querySelectorAll('.selectable-cell');
+                    const updatedSelectedSlots = {};
+
+                    cells.forEach(cell => {
+                        const date = cell.dataset.date;
+                        const time = cell.dataset.time;
+
+                        if (cell.classList.contains('selected')) {
+                            if (!updatedSelectedSlots[date]) {
+                                updatedSelectedSlots[date] = [];
+                            }
+                            updatedSelectedSlots[date].push(time);
+                        }
+                    });
+
+                    // 서버로 선택된 시간대 저장
+                    const responseSave = await fetch('http://localhost:5000/api/save-selected-slots', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json'
                         },
-                        body: JSON.stringify({ eventId, selectedSlots })
+                        body: JSON.stringify({ eventId, selectedSlots: updatedSelectedSlots })
                     });
 
-                    if (response.ok) {
+                    if (responseSave.ok) {
                         alert('선택된 시간대가 성공적으로 저장되었습니다.');
-                        console.log('선택된 시간대:', selectedSlots);
+                        console.log('선택된 시간대:', updatedSelectedSlots);
                     } else {
                         alert('시간대 저장에 실패했습니다.');
                     }

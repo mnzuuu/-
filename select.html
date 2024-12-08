@@ -4,43 +4,167 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>시간 선택 페이지</title>
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;700&display=swap" rel="stylesheet">
     <style>
+        @font-face {
+            font-family: 'HSSanTokki20-Regular';
+            src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/2405@1.0/HSSanTokki20-Regular.woff2') format('woff2');
+            font-weight: normal;
+            font-style: normal;
+        } /*            font-family: 'HSSanTokki20-Regular', sans-serif; */
+        
+        body {
+            font-family: 'Noto Sans', sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            overflow: auto;
+        }
+
+        .container {
+            background-color: #ffffff;
+            padding: 20px 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            max-width: 800px;
+            width: 90%;
+            text-align: center;
+        }
+
+        h1, h2 {
+            margin-bottom: 20px;
+            color: #333333;
+        }
+
+        h1 {
+            font-family: 'HSSanTokki20-Regular', sans-serif;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        h2 {
+            font-size: 18px;
+            color: #555555;
+        }
+
         table {
             width: 100%;
             border-collapse: collapse;
+            margin-top: 20px;
+            table-layout: fixed;
         }
-        table, th, td {
-            border: 1px solid black;
+        .table-container {
+            max-height: 600px;
+            overflow-y: auto;
+            border: 1px solid #dddddd;
+            border-radius: 5px;
+            flex: 1; 
+            margin-top: 20px;
         }
+
         th, td {
+            border: 1px solid #dddddd;
             padding: 10px;
             text-align: center;
+            font-size: 14px;
         }
+
+        th {
+            background-color: #f4f4f4;
+            position: sticky;
+            z-index: 1; 
+            font-weight: bold;
+            color: #555555;
+            top: 0;
+        }
+
         .selectable-cell {
             cursor: pointer;
-            background-color: #f0f0f0; /* 기본 배경색 */
+            background-color: #f9f9f9;
         }
+
+        .selectable-cell:hover {
+            background-color: #f0f0f0;
+        }
+
         .selectable-cell.selected {
-            background-color: lightpink; /* 선택된 상태를 표시하는 배경색 */
-            color: #fff;
+            background-color: lightpink;
+            color: white;
         }
         #login-form {
             margin-bottom: 20px;
         }
+        #login-form input {
+            width: 150px;
+            padding: 8px;
+            margin: 5px;
+            border: 1px solid #cccccc;
+            border-radius: 5px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+
+        #login-button {
+            background-color: lightpink;
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        #login-button:hover {
+            background-color: lightcoral;
+        }
+
+        #save-button {
+            display: inline-block;
+            background-color: lightpink;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            margin-top: 20px;
+            cursor: pointer;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        #save-button:hover {
+            background-color: lightcoral;
+        }
+        
+        #save-button:disabled {
+            background-color: #dddddd;
+            color: #aaaaaa;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
     </style>
 </head>
 <body>
-    <h1 id="event-name">이벤트 이름: 로딩 중...</h1>
-    <h2>날짜와 시간대를 선택하세요</h2>
+    <h1 id="event-name">로딩 중...</h1>
+    <h2>날짜와 시간대를 선택해주세요 :)</h2>
 
     <div id="login-form">
-        <label for="nickname">닉네임:</label>
+        <label for="nickname">닉네임 :</label>
         <input type="text" id="nickname" required>
-        <label for="password">비밀번호 (4자리 숫자):</label>
+        <label for="password">비밀번호 (4자리 숫자) :</label>
         <input type="password" id="password" maxlength="4" required>
         <button id="login-button">로그인</button>
     </div>
 
+    <div class="table-container">
     <table id="time-table">
         <thead>
             <tr id="date-header">
@@ -50,8 +174,9 @@
         <tbody id="time-body">
         </tbody>
     </table>
+    </div>
 
-    <button id="save-button" disabled>선택된 시간대 저장</button>
+    <button id="save-button" disabled>저장할게요</button>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -74,9 +199,9 @@
                     isLoggedIn = true;
                     document.getElementById('login-form').style.display = 'none';
                     document.getElementById('save-button').disabled = false;
-                    alert('로그인에 성공했습니다! 시간대를 선택할 수 있습니다.');
+                    alert('로그인에 성공했어요! 이제 시간대를 선택할 수 있어요.');
                 } else {
-                    alert('유효한 닉네임과 4자리 숫자 비밀번호를 입력해주세요.');
+                    alert('유효한 닉네임 또는 4자리 숫자 비밀번호를 입력해주세요.');
                 }
             });
 
@@ -95,7 +220,7 @@
                     if (response.ok) {
                         const event = await response.json();
                         console.log("이벤트 데이터 로드 성공:", event);
-                        document.getElementById('event-name').textContent = `이벤트 이름: ${event.name}`;
+                        document.getElementById('event-name').textContent = `${event.name} (이)라는 이벤트의 시간을 정해요 `;
                         if (event.dates && event.dates.length > 0) {
                             generateTimeTable(event);
                             console.log("저장된 선택된 시간대 로드:", event.selectedSlots);
@@ -104,14 +229,14 @@
                             }
                         } else {
                             console.error("이벤트에 날짜 데이터가 없습니다.");
-                            alert("이벤트에 날짜 정보가 없습니다.");
+                            alert("이벤트에 날짜 정보가 없어요.");
                         }
                     } else {
-                        alert('이벤트 정보를 가져오는 중 오류가 발생했습니다.');
+                        alert('이벤트 정보를 가져오는 중 오류가 발생했어요.');
                     }
                 } catch (error) {
                     console.error("이벤트 정보를 가져오는 중 오류 발생:", error);
-                    alert('서버와 통신 중 오류가 발생했습니다.');
+                    alert('서버와 통신 중 오류가 발생했어요.');
                 }
             }
 
@@ -130,7 +255,7 @@
                 // 날짜들 추가 (헤더 행에 날짜 삽입)
                 event.dates.forEach(date => {
                     try {
-                        const formattedDate = new Date(date).toLocaleDateString('ko-KR', { weekday: 'short', year: 'numeric', month: 'long', day: 'numeric' });
+                        const formattedDate = new Date(date).toLocaleDateString('ko-KR', { weekday: 'short', month: 'long', day: 'numeric' });
                         const dateCell = document.createElement('th');
                         dateCell.textContent = formattedDate;
                         dateCell.dataset.date = date;
@@ -224,7 +349,7 @@
             document.getElementById('time-table').addEventListener('mousedown', function(e) {
                 if (e.target.classList.contains('selectable-cell')) {
                     if (!isLoggedIn) {
-                        alert('로그인 후에 시간대를 선택할 수 있습니다.');
+                        alert('로그인 후에 시간대를 선택할 수 있어요.');
                         return;
                     }
                     isDragging = true;
@@ -237,7 +362,7 @@
             document.getElementById('time-table').addEventListener('mousemove', function(e) {
                 if (isDragging && e.target.classList.contains('selectable-cell')) {
                     if (!isLoggedIn) {
-                        alert('로그인 후에 시간대를 선택할 수 있습니다.');
+                        alert('로그인 후에 시간대를 선택할 수 있어요.');
                         return;
                     }
                     if (dragStartState) {
@@ -257,7 +382,7 @@
             document.getElementById('time-table').addEventListener('click', function(e) {
                 if (e.target.classList.contains('selectable-cell') && !isDragging) {
                     if (!isLoggedIn) {
-                        alert('로그인 후에 시간대를 선택할 수 있습니다.');
+                        alert('로그인 후에 시간대를 선택할 수 있어요.');
                         return;
                     }
                     toggleCellSelection(e.target);
@@ -270,7 +395,7 @@
 
             document.getElementById('save-button').addEventListener('click', async function () {
                 if (!isLoggedIn) {
-                    alert('로그인 후에 시간대를 저장할 수 있습니다.');
+                    alert('로그인 후에 시간대를 저장할 수 있어요.');
                     return;
                 }
                 try {
@@ -300,14 +425,14 @@
                     });
 
                     if (responseSave.ok) {
-                        alert('선택된 시간대가 성공적으로 저장되었습니다.');
+                        alert('선택된 시간대를 성공적으로 저장했어요.');
                         console.log('선택된 시간대:', updatedSelectedSlots);
                     } else {
-                        alert('시간대 저장에 실패했습니다.');
+                        alert('시간대 저장에 실패했어요.');
                     }
                 } catch (error) {
                     console.error('시간대 저장 중 오류 발생:', error);
-                    alert('서버와 통신 중 오류가 발생했습니다.');
+                    alert('서버와 통신 중 오류가 발생했어요.');
                 }
             });
 

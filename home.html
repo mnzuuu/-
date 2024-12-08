@@ -3,90 +3,183 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>이벤트 생성</title>
+    <title>WEMEET</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="shortcut icon" href="./favicon.ico" type="image/x-icon">
+    <link rel="icon" href="./favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.9/flatpickr.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-timepicker/1.13.18/jquery.timepicker.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.9/flatpickr.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.9/l10n/ko.min.js"></script> 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.9/l10n/ko.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-timepicker/1.13.18/jquery.timepicker.min.js"></script>
-
     <style>
-        /* 각 입력 필드에 맞는 스타일을 개별적으로 설정 */
-        #event-start-time, #event-end-time {
-            width: 200px; /* 시간 입력 필드의 크기를 명시적으로 설정 */
-            padding: 8px;
+        @font-face {
+            font-family: 'HSSanTokki20-Regular';
+            src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/2405@1.0/HSSanTokki20-Regular.woff2') format('woff2');
+            font-weight: normal;
+            font-style: normal;
+        } /*            font-family: 'HSSanTokki20-Regular', sans-serif; */
+        
+        body {
+            font-family: 'Noto Sans', sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            background-color: #ffffff;
+            padding: 20px 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            margin: 40px auto;
+        }
+
+        h1 {
+            font-family: 'HSSanTokki20-Regular', sans-serif;
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #333333;
+            text-align: center;
+        }
+
+        h3 {
+            font-size: 18px;
+            font-weight: bold;
+            margin-top: 20px;
             margin-bottom: 10px;
-        }    
+            color: #555555;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #666666;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #cccccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+            font-size: 14px;
+            color:#555555;
+        }
+
+        input[type="text"]:focus {
+            border-color: lightpink;
+            outline: none;
+        }
+
+        .button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background-color: lightpink;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .button:hover {
+            background-color: lightcoral;
+        }
+
+        .date-preview {
+            font-size: 14px;
+            color: #555555;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
     </style>
 </head>
 <body>
-    <h1>이벤트 생성 페이지</h1>
-    <form id="create-event-form">
-        <label for="event-name">이벤트 이름:</label>
-        <input type="text" id="event-name" name="event-name" required><br><br>
+    <div class="container">
+        <h1>WEMEET</h1>
+        <form id="create-event-form">
+            <div class="form-group">
+                <label for="event-name">✏️ 이벤트 이름을 적어주세요</label>
+                <input type="text" id="event-name" name="event-name" placeholder="텍스트를 입력하세요 !" required>
+            </div>
 
-        <h3>날짜 선택</h3>
-        <label for="event-dates">날짜를 선택해주세요:</label>
-        <input type="text" id="event-dates" name="event-dates" placeholder="날짜를 선택하세요" required readonly><br><br>
+            <div class="form-group">
+                <label for="event-dates">🗓️ 날짜를 선택해주세요</label>
+                <input type="text" id="event-dates" name="event-dates" placeholder="날짜를 선택하세요 !" required readonly>
+                <div id="date-preview" class="date-preview"></div>
+            </div>
 
-        <h3>시간대 설정</h3>
-        <label for="event-start-time">시작 시간을 설정해주세요:</label>
-        <input type="text" id="event-start-time" name="event-start-time" placeholder="시작 시간을 선택하세요" required><br><br>
+            <div class="form-group">
+                <label for="event-start-time">⌚ 시간을 선택해주세요</label>
+                <input type="text" id="event-start-time" name="event-start-time" placeholder="시작 시간을 선택하세요 !" required>
+                <input type="text" id="event-end-time" name="event-end-time" placeholder="종료 시간을 선택하세요 !" required>
+            </div>
 
-        <label for="event-end-time">종료 시간을 설정해주세요:</label>
-        <input type="text" id="event-end-time" name="event-end-time" placeholder="종료 시간을 선택하세요" required><br><br>
-
-        <button type="submit">이벤트 생성</button>
-    </form>
+            <button type="submit" class="button">준비됐어요 :)</button>
+        </form>
+    </div>
 
     <script>
-        let selectedDates = []; // 선택된 날짜들을 저장할 배열
+        let selectedDates = [];
 
-        document.addEventListener('DOMContentLoaded', function() {
-            // 날짜 선택을 위한 Flatpickr 설정
+        document.addEventListener('DOMContentLoaded', function () {
             flatpickr("#event-dates", {
                 mode: "multiple",
                 minDate: "today",
                 dateFormat: "Y-m-d",
                 locale: "ko",
-                onChange: function(dates, dateStr, instance) {
-                    selectedDates = dates.map(date => instance.formatDate(date, 'Y-m-d')); // 날짜를 문자열 형식으로 저장
+                onChange: function (dates, dateStr, instance) {
+                    selectedDates = dates.map(date => instance.formatDate(date, 'Y-m-d'));
                     const datesField = document.getElementById('event-dates');
-                    datesField.value = `총 ${selectedDates.length}일이 선택되었습니다`;
+                    const preview = document.getElementById('date-preview');
+                    datesField.value = `총 ${selectedDates.length}일이 선택되었어요 !`;
+                    preview.textContent = `선택된 날짜에요 : ${selectedDates.join(', ')}`;
                 }
             });
 
-            // 시간 선택을 위한 jQuery Timepicker 설정
             $('#event-start-time').timepicker({
-                timeFormat: 'h:i A', // 오전/오후 형식을 지원하도록 변경
+                timeFormat: 'h:i A',
                 interval: 30,
                 minTime: '12:00 AM',
                 maxTime: '11:30 PM',
-                dynamic: false,
                 dropdown: true,
                 scrollbar: true,
-                change: function(time) {
+                change: function () {
                     const start = $('#event-start-time').timepicker('getTime');
                     if (start) {
-                        // 종료 시간의 최소 시간을 시작 시간 이후로 설정
                         $('#event-end-time').timepicker('option', 'minTime', start);
                     }
                 }
             });
 
             $('#event-end-time').timepicker({
-                timeFormat: 'h:i A', // 오전/오후 형식을 지원하도록 변경
+                timeFormat: 'h:i A',
                 interval: 30,
                 minTime: '12:00 AM',
                 maxTime: '11:30 PM',
-                dynamic: false,
                 dropdown: true,
                 scrollbar: true,
-                change: function(time) {
+                change: function () {
                     const end = $('#event-end-time').timepicker('getTime');
                     if (end) {
-                        // 시작 시간의 최대 시간을 종료 시간 이전으로 설정
                         $('#event-start-time').timepicker('option', 'maxTime', end);
                     }
                 }
@@ -118,7 +211,7 @@
                 const startDateObj = new Date(`1970-01-01 ${startTime}`);
                 const endDateObj = new Date(`1970-01-01 ${endTime}`);
                 if (startDateObj >= endDateObj) {
-                    alert("시작 시간은 종료 시간보다 이전이어야 합니다.");
+                    alert("시작 시간은 종료 시간보다 이전이어야 해요.");
                     return;
                 }
 
@@ -146,14 +239,14 @@
 
                     if (response.ok) {
                         const data = await response.json();
-                        alert("이벤트가 성공적으로 생성되었습니다.");
+                        alert("이벤트가 성공적으로 생성되었어요.");
                         window.location.href = `http://localhost:5000/events/${data.eventId}/select`;
                     } else {
-                        alert("이벤트 생성에 실패했습니다.");
+                        alert("이벤트 생성에 실패했어요.");
                     }
                 } catch (error) {
                     console.error("서버와 통신 중 오류 발생:", error);
-                    alert("서버와 통신 중 오류가 발생했습니다.");
+                    alert("서버와 통신 중 오류가 발생했어요.");
                 }
             };
         });

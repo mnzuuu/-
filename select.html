@@ -14,10 +14,26 @@
             font-weight: normal;
             font-style: normal;
         } /*            font-family: 'HSSanTokki20-Regular', sans-serif; */
+
+        @font-face {
+            font-family: 'Cafe24SsurroundAir';
+            src: url('https://gcore.jsdelivr.net/gh/projectnoonnu/noonfonts_2105_2@1.0/Cafe24SsurroundAir.woff') format('woff');
+            font-weight: normal;
+            font-style: normal;
+        } /*            font-family: 'Cafe24SsurroundAir', sans-serif; */
+
+        @font-face {
+            font-family: 'Cafe24Ssurround';
+            src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2105_2@1.0/Cafe24Ssurround.woff') format('woff');
+            font-weight: normal;
+            font-style: normal;
+        } /*            font-family: 'Cafe24Ssurround', sans-serif; */
+
         
         body {
-            font-family: 'Noto Sans', sans-serif;
+            font-family: 'Cafe24SsurroundAir', sans-serif;
             background-color: #f9f9f9;
+            color: #333333;
             margin: 0;
             padding: 0;
             display: flex;
@@ -37,20 +53,18 @@
             text-align: center;
         }
 
-        h1, h2 {
-            margin-bottom: 20px;
-            color: #333333;
-        }
-
         h1 {
+            color : #333333;
+            margin-top: 60px;
+            margin-bottom: 0;
             font-family: 'HSSanTokki20-Regular', sans-serif;
-            font-size: 28px;
-            font-weight: bold;
+            font-size: 30px;
         }
 
         h2 {
-            font-size: 18px;
-            color: #555555;
+            font-family: 'Cafe24Ssurround', sans-serif;
+            font-size: 16px;
+            color: #666666;
         }
 
         table {
@@ -60,7 +74,7 @@
             table-layout: fixed;
         }
         .table-container {
-            max-height: 600px;
+            max-height: 550px;
             overflow-y: auto;
             border: 1px solid #dddddd;
             border-radius: 5px;
@@ -98,6 +112,8 @@
             color: white;
         }
         #login-form {
+            font-family: 'Cafe24Ssurround', sans-serif; 
+            color:#666666;
             margin-bottom: 20px;
         }
         #login-form input {
@@ -111,6 +127,7 @@
         }
 
         #login-button {
+            font-family: 'Cafe24Ssurround', sans-serif;
             background-color: lightpink;
             color: white;
             border: none;
@@ -126,6 +143,7 @@
         }
 
         #save-button {
+            font-family: 'Cafe24Ssurround', sans-serif;
             display: inline-block;
             background-color: lightpink;
             color: white;

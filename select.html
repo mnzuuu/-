@@ -246,15 +246,15 @@
                             document.getElementById('save-button').disabled = false;
                             isLoggedIn = true;
                         
-                            await fetchUserSlots(eventId, userId);
-                            } else {
-                            alert(result.message);
-                            }
-                        } catch (error) {
-                            console.error("로그인 요청 중 오류 발생:", error);
-                            alert("서버와 통신 중 오류가 발생했어요.");
+                            await fetchEvent();
+                        } else {
+                        alert(result.message);
                         }
-                        });    
+                    } catch (error) {
+                        console.error("로그인 요청 중 오류 발생:", error);
+                        alert("서버와 통신 중 오류가 발생했어요.");
+                    }
+                });    
 
                 // 이벤트 데이터 가져오기
                 async function fetchEvent() {
@@ -280,8 +280,12 @@
 
                             if (event.dates && event.dates.length > 0) {
                                 generateTimeTable(event);
-                                if (!isLoggedIn) {
-                                    await fetchAllSlots(eventId); // 로그인하지 않은 경우 전체 유저 데이터 로드
+                                if (isLoggedIn && userId) {
+                                    // 로그인 상태에서 해당 유저의 데이터만 불러오기
+                                    await fetchUserSlots(eventId, userId);
+                                } else {
+                                    // 로그인하지 않은 상태에서 전체 유저의 데이터 불러오기
+                                    await fetchUserAndAllSlots(eventId);
                                 }
                             } else {
                                 console.error("이벤트에 날짜 데이터가 없습니다.");
@@ -401,12 +405,47 @@
                     }
                 }
 
+                function applyAllSlotsWithOpacity(allSlots, totalParticipants) {
+                    const cellCountMap = {}; // 셀별로 몇 명이 선택했는지 저장
+                
+                    // 모든 선택 데이터를 셀별로 집계
+                    allSlots.forEach(slot => {
+                        const { selectedSlots } = slot;
+                        for (const [date, times] of Object.entries(selectedSlots)) {
+                            times.forEach(time => {
+                                const cellKey = `${date}-${time}`;
+                                if (!cellCountMap[cellKey]) {
+                                    cellCountMap[cellKey] = 0;
+                                }
+                                cellCountMap[cellKey] += 1;
+                            });
+                        }
+                    });
+                
+                    // 각 셀에 투명도 적용
+                    const cells = document.querySelectorAll('.selectable-cell');
+                    cells.forEach(cell => {
+                        const date = cell.dataset.date;
+                        const time = cell.dataset.time;
+                        const cellKey = `${date}-${time}`;
+                        const count = cellCountMap[cellKey] || 0; // 선택되지 않았다면 0
+                        const opacity = count / totalParticipants; // 투명도 계산
+                
+                        if (count > 0) {
+                            cell.style.backgroundColor = `rgba(173, 216, 230, ${opacity})`; 
+                        } else {
+                            cell.style.backgroundColor = ''; // 선택되지 않은 셀 초기화
+                        }
+                    });
+                }
+
                 async function fetchAllSlots(eventId) {
                     try {
                         const response = await fetch(`http://localhost:5000/api/events/${eventId}/slots`);
                         if (response.ok) {
                             const allSlots = await response.json();
-                            applyAllSlots(allSlots);
+                            const totalParticipants = document.querySelector('#event-name').dataset.participantsCount || 1; // 참가자 수
+                            applyAllSlotsWithOpacity(allSlots, totalParticipants);
                         } else {
                             console.error('모든 유저 데이터 로드 실패');
                         }
@@ -467,6 +506,7 @@
                             const cells = document.querySelectorAll('.selectable-cell');
                             cells.forEach(cell => {
                             cell.classList.remove('selected', 'other-user'); // 기존 선택 상태 초기화
+                            cell.style.backgroundColor = ''; // 투명도 초기화
                             });
                         } 
 
@@ -482,6 +522,36 @@
                                 }
                             } catch (error) {
                                 console.error("참가자 목록 로드 중 오류 발생:", error);
+                            }
+                        }
+
+                        async function fetchUserAndAllSlots(eventId, userId) {
+                            // 1. 현재 유저 데이터 로드 및 강조
+                            try {
+                                const response = await fetch(`http://localhost:5000/api/events/${eventId}/slots/${userId}`);
+                                if (response.ok) {
+                                    const userSlots = await response.json();
+                                    resetTable(); // 테이블 초기화
+                                    applySelectedSlots(userSlots.selectedSlots); // 현재 유저 데이터 강조
+                                } else {
+                                    console.warn('현재 유저 데이터가 없습니다. 새 데이터를 생성할 준비를 합니다.');
+                                }
+                            } catch (error) {
+                                console.error('현재 유저 데이터 로드 중 오류 발생:', error);
+                            }
+                        
+                            // 2. 전체 데이터 로드 및 투명도 계산
+                            try {
+                                const response = await fetch(`http://localhost:5000/api/events/${eventId}/slots`);
+                                if (response.ok) {
+                                    const allSlots = await response.json();
+                                    const totalParticipants = allSlots.length || 1; // 전체 참가자 수
+                                    applyAllSlotsWithOpacity(allSlots, totalParticipants); // 투명도 계산
+                                } else {
+                                    console.error('전체 유저 데이터 로드 실패');
+                                }
+                            } catch (error) {
+                                console.error('전체 유저 데이터 로드 중 오류 발생:', error);
                             }
                         }
 

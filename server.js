@@ -2,13 +2,12 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
-const path = require('path');
-
-// Express 앱 초기화
 const app = express();
+const path = require('path');
 
 // 미들웨어 설정
 app.use(bodyParser.json());
+app.use(express.static(path.join(__dirname, 'public')))
 
 const cors = require('cors');
 app.use(cors({
@@ -16,6 +15,7 @@ app.use(cors({
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'],
 }));
+
 
 // MongoDB 연결 설정
 mongoose.connect('mongodb+srv://alswn235:0302@cluster1.aerc0.mongodb.net/eventDB?retryWrites=true&w=majority', {
@@ -148,10 +148,47 @@ app.post('/api/users/login', async (req, res) => {
   }
 });
 
+// 특정 날짜와 시간에 대한 참여자 목록 반환
+app.get('/api/events/:id/participants', async (req, res) => {
+  const { id: eventId } = req.params;
+  const { date, time } = req.query;
+
+  if (!date || !time) {
+    return res.status(400).json({ message: '날짜와 시간 정보가 필요해요.' });
+  }
+
+  try {
+    // 해당 이벤트에서 특정 시간대를 선택한 사용자들 검색
+    const selectedTimes = await SelectedTime.find({
+      eventId,
+      [`selectedSlots.${date}`]: time, // 특정 날짜와 시간 조건
+    });
+
+    if (selectedTimes.length > 0) {
+      const participantIds = selectedTimes.map(slot => slot.userId);
+      const participants = await User.find({ _id: { $in: participantIds } }, 'nickname');
+      const participantNames = participants.map(user => user.nickname);
+      res.status(200).json({ participants: participantNames });
+    } else {
+      res.status(200).json({ participants: [] });
+    }
+  } catch (error) {
+    console.error('참여자 목록 조회 중 오류 발생:', error);
+    res.status(500).json({ message: '참여자 목록 조회 중 오류가 발생했어요.' });
+  }
+});
 
 
 
 // ====== 정적 파일 및 HTML 제공 ======
+// HTML 파일 제공
+app.get('/home', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'home.html'));
+});
+
+app.get('/select', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'select.html'));
+});
 
 // 이벤트 조회 라우트
 app.get('/api/events', async (req, res) => {
@@ -171,6 +208,7 @@ app.get('/events/select', (req, res) => {
 
 // 특정 이벤트 시간 선택 페이지로 이동
 app.get('/events/:id/select', async (req, res) => {
+  res.sendFile(path.join(__dirname, 'select.html'));
   const { id } = req.params;
   if (!mongoose.Types.ObjectId.isValid(id)) {
     return res.status(400).send('잘못된 이벤트 ID입니다.');

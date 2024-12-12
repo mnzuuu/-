@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WEMEET</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="shortcut icon" href="./favicon.ico" type="image/x-icon">
-    <link rel="icon" href="./favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="./public/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="./public/favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.9/flatpickr.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-timepicker/1.13.18/jquery.timepicker.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
@@ -21,15 +21,34 @@
             font-style: normal;
         } /*            font-family: 'HSSanTokki20-Regular', sans-serif; */
         
+        @font-face {
+            font-family: 'Cafe24Ssurround';
+            src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2105_2@1.0/Cafe24Ssurround.woff') format('woff');
+            font-weight: normal;
+            font-style: normal;
+        } /*            font-family: 'Cafe24Ssurround', sans-serif; */
+
+        @font-face {
+            font-family: 'Cafe24SsurroundAir';
+            src: url('https://gcore.jsdelivr.net/gh/projectnoonnu/noonfonts_2105_2@1.0/Cafe24SsurroundAir.woff') format('woff');
+            font-weight: normal;
+            font-style: normal;
+        } /*            font-family: 'Cafe24SsurroundAir', sans-serif; */
+
         body {
             font-family: 'Noto Sans', sans-serif;
             background-color: #f9f9f9;
             margin: 0;
             padding: 0;
+            flex-direction: column; /* 세로(column) 배열 */
             display: flex;
-            justify-content: center;
+            justify-content: flex-start; /* 상단 정렬 */
             align-items: center;
             height: 100vh;
+            background-image: url('public/cloud.jpg'); /* 구름 이미지 URL */
+            background-size: cover; /* 배경 이미지가 화면을 덮도록 설정 */
+            background-repeat: no-repeat; /* 반복 금지 */
+            background-position: center; /* 이미지 가운데 정렬 */
         }
 
         .container {
@@ -37,6 +56,7 @@
             padding: 20px 30px;
             border-radius: 10px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            color: #87ceeb;
             max-width: 600px;
             margin: 40px auto;
         }
@@ -59,6 +79,7 @@
         }
 
         label {
+            font-family: 'Cafe24Ssurround', sans-serif;
             display: block;
             margin-bottom: 8px;
             font-weight: bold;
@@ -82,14 +103,15 @@
         }
 
         .button {
+            font-family: 'HSSanTokki20-Regular', sans-serif;
             display: block;
             width: 100%;
             padding: 10px;
             background-color: lightpink;
-            color: white;
+            color: #ffffff;
             border: none;
             border-radius: 5px;
-            font-size: 16px;
+            font-size: 20px;
             font-weight: bold;
             cursor: pointer;
             text-align: center;
@@ -106,40 +128,119 @@
             text-align: center;
         }
 
-        .form-group {
-            margin-bottom: 20px;
+        .share-link-container {
+            width: 100%;
+            max-width: 800px; /* 컨테이너 폭을 적절히 제한 */
+            margin: 20px auto; /* 가운데 정렬 */
+            padding: 15px; /* 내부 여백 */
+            background-color: #ffffff; /* 흰색 배경 */
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* 그림자 */
+            display: flex;
+            flex-direction: column; /* 세로 정렬 */
+            align-items: center; /* 가운데 정렬 */
+            margin-top: 50px;
+            gap: 10px; /* 요소 간 간격 */
+        }
+    
+        #share-label {
+            font-size: 16px; /* 텍스트 크기 */
+            font-weight: bold; /* 굵은 글씨 */
+            color: #666666; /* 회색 텍스트 */
+            text-align: center; /* 가운데 정렬 */
+        }
+    
+        .share-link-inputs {
+            display: flex; /* 가로 정렬 */
+            width: 100%; /* 전체 폭 */
+            gap: 10px; /* 입력 필드와 버튼 간 간격 */
+        }
+    
+        #shared-link {
+            flex: 4; /* 입력 필드 비율 */
+            padding: 10px; /* 내부 여백 */
+            height: 45px; /* 입력 필드 높이 */
+            border: 1px solid #cccccc; /* 테두리 */
+            border-radius: 5px; /* 모서리 둥글게 */
+            font-size: 14px; /* 텍스트 크기 */
+            box-sizing: border-box;
+        }
+    
+        #shared-link:focus {
+            border-color: lightpink; /* 포커스 시 테두리 색상 */
+            outline: none; /* 기본 포커스 제거 */
+        }
+    
+        #open-shared-link {
+            flex: 1; /* 버튼 비율 */
+            height: 45px; /* 버튼 높이 */
+            background-color: skyblue; /* 버튼 배경색 */
+            color: white; /* 텍스트 색상 */
+            border: none; /* 테두리 제거 */
+            border-radius: 5px; /* 모서리 둥글게 */
+            font-size: 16px; /* 텍스트 크기 */
+            font-weight: bold; /* 텍스트 굵게 */
+            cursor: pointer; /* 포인터 표시 */
+            text-align: center; /* 텍스트 가운데 정렬 */
+        }
+    
+        #open-shared-link:hover {
+            background-color: rgb(96, 192, 230); /* 호버 시 버튼 색상 변경 */
         }
 
     </style>
 </head>
 <body>
+    <div class="share-link-container">
+        <label for="shared-link" id="share-label">🔗 이미 만들어진 이벤트가 있나요? </label>
+        <div class="share-link-inputs">
+            <input type="text" id="shared-link" name="shared-link" placeholder="공유된 링크로 접속 가능해요!">
+            <button id="open-shared-link" class="button">이동</button>
+        </div>
+    </div>
+
     <div class="container">
-        <h1>WEMEET</h1>
+        <h1>WEMEET</span></h1>
         <form id="create-event-form">
             <div class="form-group">
-                <label for="event-name">✏️ 이벤트 이름을 적어주세요</label>
-                <input type="text" id="event-name" name="event-name" placeholder="텍스트를 입력하세요 !" required>
+                <label for="event-name">✏️ 이벤트의 이름을 정해요</label>
+                <input type="text" id="event-name" name="event-name" placeholder="텍스트를 입력하세요" required>
             </div>
 
             <div class="form-group">
-                <label for="event-dates">🗓️ 날짜를 선택해주세요</label>
-                <input type="text" id="event-dates" name="event-dates" placeholder="날짜를 선택하세요 !" required readonly>
+                <label for="event-dates">🗓️ 만나고 싶은 날짜들을 선택해요</label>
+                <input type="text" id="event-dates" name="event-dates" placeholder="날짜를 선택하세요" required readonly>
                 <div id="date-preview" class="date-preview"></div>
             </div>
 
             <div class="form-group">
-                <label for="event-start-time">⌚ 시간을 선택해주세요</label>
-                <input type="text" id="event-start-time" name="event-start-time" placeholder="시작 시간을 선택하세요 !" required>
-                <input type="text" id="event-end-time" name="event-end-time" placeholder="종료 시간을 선택하세요 !" required>
+                <label for="event-start-time">⌚ 만나고 싶은 시간대를 정해요</label>
+                <input type="text" id="event-start-time" name="event-start-time" placeholder="시작 시간을 선택하세요" required>
+                <input type="text" id="event-end-time" name="event-end-time" placeholder="종료 시간을 선택하세요" required>
             </div>
 
-            <button type="submit" class="button">준비됐어요 :)</button>
+            <button type="submit" class="button">준비됐어요 :D</button>
         </form>
     </div>
 
     <script>
-        let selectedDates = [];
+        document.addEventListener('DOMContentLoaded', function () {
+            const openLinkButton = document.getElementById('open-shared-link');
+        
+            openLinkButton.addEventListener('click', function () {
+                const sharedLink = document.getElementById('shared-link').value.trim();
+        
+                if (!sharedLink) {
+                    alert("공유된 링크를 입력해주세요!");
+                    return;
+                }
+        
+                // 입력된 링크로 이동
+                window.location.href = sharedLink;
+            });
+        });
 
+        let selectedDates = [];
         document.addEventListener('DOMContentLoaded', function () {
             flatpickr("#event-dates", {
                 mode: "multiple",

@@ -1,637 +1,760 @@
-    <!DOCTYPE html>
-    <html lang="ko">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>시간 선택 페이지</title>
-        <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
-        <link rel="icon" href="/favicon.ico" type="image/x-icon">
-        <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;700&display=swap" rel="stylesheet">
-        <style>
-            @font-face {
-                font-family: 'HSSanTokki20-Regular';
-                src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/2405@1.0/HSSanTokki20-Regular.woff2') format('woff2');
-                font-weight: normal;
-                font-style: normal;
-            } /*            font-family: 'HSSanTokki20-Regular', sans-serif; */
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>시간 선택 페이지</title>
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        @font-face {
+            font-family: 'HSSanTokki20-Regular';
+            src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/2405@1.0/HSSanTokki20-Regular.woff2') format('woff2');
+            font-weight: normal;
+            font-style: normal;
+        } /*            font-family: 'HSSanTokki20-Regular', sans-serif; */
 
-            @font-face {
-                font-family: 'Cafe24SsurroundAir';
-                src: url('https://gcore.jsdelivr.net/gh/projectnoonnu/noonfonts_2105_2@1.0/Cafe24SsurroundAir.woff') format('woff');
-                font-weight: normal;
-                font-style: normal;
-            } /*            font-family: 'Cafe24SsurroundAir', sans-serif; */
+        @font-face {
+            font-family: 'Cafe24SsurroundAir';
+            src: url('https://gcore.jsdelivr.net/gh/projectnoonnu/noonfonts_2105_2@1.0/Cafe24SsurroundAir.woff') format('woff');
+            font-weight: normal;
+            font-style: normal;
+        } /*            font-family: 'Cafe24SsurroundAir', sans-serif; */
 
-            @font-face {
-                font-family: 'Cafe24Ssurround';
-                src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2105_2@1.0/Cafe24Ssurround.woff') format('woff');
-                font-weight: normal;
-                font-style: normal;
-            } /*            font-family: 'Cafe24Ssurround', sans-serif; */
+        @font-face {
+            font-family: 'Cafe24Ssurround';
+            src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2105_2@1.0/Cafe24Ssurround.woff') format('woff');
+            font-weight: normal;
+            font-style: normal;
+        } /*            font-family: 'Cafe24Ssurround', sans-serif; */
 
-            
-            body {
-                font-family: 'Cafe24SsurroundAir', sans-serif;
-                background-color: #f9f9f9;
-                color: #333333;
-                margin: 0;
-                padding: 0;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                flex-direction: column;
-                overflow: auto;
-            }
+        
+        body {
+            font-family: 'Cafe24SsurroundAir', sans-serif;
+            font-size: 16px;
+            background-color: #f9f9f9;
+            color: #666666;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            overflow: auto;
 
-            .container {
-                background-color: #ffffff;
-                padding: 20px 30px;
-                border-radius: 10px;
-                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-                max-width: 800px;
-                width: 90%;
-                text-align: center;
-            }
+            background-image: url('/cloud.jpg'); /* 구름 이미지 URL */
+            background-size: cover; /* 배경 이미지가 화면을 덮도록 설정 */
+            background-repeat: no-repeat; /* 반복 금지 */
+            background-position: center; /* 이미지 가운데 정렬 */
+        }
 
-            h1 {
-                color : #333333;
-                margin-top: 60px;
-                margin-bottom: 0;
-                font-family: 'HSSanTokki20-Regular', sans-serif;
-                font-size: 30px;
-            }
+        .container {
+            background-color: #888888;
+            padding: 20px 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            max-width: 800px;
+            width: 90%;
+            text-align: center;
+        }
 
-            h2 {
-                font-family: 'Cafe24Ssurround', sans-serif;
-                font-size: 16px;
-                color: #666666;
-            }
+        h1 {
+            color : #333333;
+            margin-top: 60px;
+            margin-bottom: 40px;
+            font-family: 'HSSanTokki20-Regular', sans-serif;
+            font-size: 30px;
+        }
 
-            table {
-                width: 100%;
-                border-collapse: collapse;
-                margin-top: 20px;
-                table-layout: fixed;
-            }
-            .table-container {
-                max-height: 550px;
-                overflow-y: auto;
-                border: 1px solid #dddddd;
-                border-radius: 5px;
-                flex: 1; 
-                margin-top: 20px;
-                margin-left : 100px;
-                margin-right: 100px;
+        h2 {
+            font-family: 'Cafe24SsurroundAir', sans-serif;
+            font-size: 16px;
+            color: #666666;
+        }
 
-            }
+        h3 {
+            font-family: 'Cafe24SsurroundAir', sans-serif;
+            font-size: 16px;
+            color: #666666;
+            margin:0px;
+        }
 
-            th, td {
-                border: 1px solid #dddddd;
-                padding: 10px;
-                text-align: center;
-                font-size: 14px;
-            }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed;
+        }
+        .table-container {
+            max-height: 550px;
+            height: auto; /* 컨테이너 높이를 내용에 맞게 조정 */
+            overflow: visible; /* 스크롤을 제거하고 내용이 자동으로 확장되도록 설정 */
+            overflow-y: auto;
 
-            th {
-                background-color: #f4f4f4;
-                position: sticky;
-                z-index: 1; 
-                font-weight: bold;
-                color: #555555;
-                top: 0;
-            }
+            border: 1px solid #dddddd;
+            flex: 1; 
+            margin-top: 40px;
+            margin-left : 100px;
+            margin-right: 100px;
+        }
 
-            .selectable-cell {
-                cursor: pointer;
-                background-color: #f9f9f9;
-            }
+        td {
+            border: 1px solid #888888;
+            padding: 10px;
+            text-align: center;
+            font-size: 14px;
+        }
 
-            .selectable-cell:hover {
-                background-color: #f0f0f0;
-            }
+        th {
+            background-color: #f4f4f4;
+            border :1px solid #aaaaaa;
+            padding:10px;
+            font-size: 14px;
+            text-align: center;
+            position: sticky;
+            z-index: 1; 
+            font-weight: bold;
+            color: #333333;
+            top: 0;
+        }
 
-            .selectable-cell.selected {
-                background-color: lightpink;
-                color: white;
-            }
-            
-            .selectable-cell.other-user {
-                background-color: lightblue;
-                color: black;
-            }
-            #login-form {
-                font-family: 'Cafe24Ssurround', sans-serif; 
-                color:#666666;
-                margin-bottom: 20px;
-            }
-            #login-form input {
-                width: 150px;
-                padding: 8px;
-                margin: 5px;
-                border: 1px solid #cccccc;
-                border-radius: 5px;
-                font-size: 14px;
-                box-sizing: border-box;
-            }
+        .selectable-cell {
+            cursor: pointer;
+        }
 
-            #login-button {
-                font-family: 'Cafe24Ssurround', sans-serif;
-                background-color: lightpink;
-                color: white;
-                border: none;
-                padding: 8px 20px;
-                border-radius: 5px;
-                font-size: 16px;
-                font-weight: bold;
-                cursor: pointer;
-            }
+        .selectable-cell:hover {
+            background-color: #f0f0f0;
+        }
 
-            #login-button:hover {
-                background-color: lightcoral;
-            }
+        .selectable-cell.selected {
+            background-color: lightpink;
+            border-color: #999999;
+            color: white;
+        }
+        
+        .selectable-cell.other-user {
+            background-color: cadetblue;
+        }
+        #login-form {
+            font-family: 'Cafe24Ssurround', sans-serif; 
+            color:#555555;
+        }
+        #login-form input {
+            width: 150px;
+            padding: 8px;
+            margin: 5px;
+            border: 1px solid #cccccc;
+            border-radius: 5px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
 
-            #save-button {
-                font-family: 'Cafe24Ssurround', sans-serif;
-                display: inline-block;
-                background-color: lightpink;
-                color: white;
-                font-size: 16px;
-                font-weight: bold;
-                padding: 10px 20px;
-                border: none;
-                border-radius: 5px;
-                margin-top: 20px;
-                cursor: pointer;
-                text-align: center;
-                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            }
-            
-            #save-button:hover {
-                background-color: lightcoral;
-            }
-            
-            #save-button:disabled {
-                background-color: #dddddd;
-                color: #aaaaaa;
-                cursor: not-allowed;
-                box-shadow: none;
-            }
-        </style>
-    </head>
-    <body>
-        <h1 id="event-name">로딩 중...</h1>
-        <h2>날짜와 시간대를 선택해주세요 :)</h2>
+        #login-button {
+            font-family: 'Cafe24Ssurround', sans-serif;
+            background-color: lightpink;
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
 
-        <div id="login-form">
-            <label for="nickname">닉네임 :</label>
-            <input type="text" id="nickname" required>
-            <label for="password">비밀번호 (4자리 숫자) :</label>
-            <input type="password" id="password" maxlength="4" required>
-            <button id="login-button">로그인</button>
-        </div>
+        #login-button:hover {
+            background-color: lightcoral;
+        }
 
-        <div class="table-container">
-        <table id="time-table">
-            <thead>
-                <tr id="date-header">
-                    <th>시간</th>
-                </tr>
-            </thead>
-            <tbody id="time-body">
-            </tbody>
-        </table>
-        </div>
+        #save-button {
+            font-family: 'Cafe24Ssurround', sans-serif;
+            display: inline-block;
+            background-color: lightpink;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            margin-top: 20px;
+            cursor: pointer;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        #save-button:hover {
+            background-color: lightcoral;
+        }
+        
+        #save-button:disabled {
+            background-color: #dddddd;
+            color: #aaaaaa;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
 
-        <button id="save-button" disabled>저장할게요</button>
+        .user-message {
+            font-size: 20px;
+            margin-bottom: 20px;
+            color: #222222;
+        }
+    
+        .nickname-message {
+            background-color: lightpink;
+            font-size: 20px; /* 추가로 font-size 명시 */
+            color: #222222;
+            padding: 0 5px; /* 공백을 padding으로 대체 */
+        } 
 
-        <script>
-            document.addEventListener('DOMContentLoaded', async function() {
-                let isDragging = false;
-                let dragStartState = false;
-                const selectedSlots = {};
-                let isLoggedIn = false;
-                let userId = null;
+        .share-container {
+            position: fixed; /* 페이지의 고정 위치 설정 */
+            top: 20px; /* 화면 상단에서 20px 떨어짐 */
+            right: 50px; /* 화면 오른쪽에서 20px 떨어짐 */
+            display: flex; /* 메시지와 버튼을 가로로 정렬 */
+            align-items: center; /* 수직 가운데 정렬 */
+            gap: 10px; /* 메시지와 버튼 사이 간격 */
+        }
+        
+        #copy-url-button {
+            font-family: 'Cafe24Ssurround', sans-serif; 
+            width: auto;
+            padding: 10px 20px;
+            background-color: skyblue;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        
+        #copy-url-button:hover {
+            background-color: lightblue;
+        }
 
-                // 페이지 로딩 시 URL에서 이벤트 ID 가져오기
-                const urlParams = new URLSearchParams(window.location.search);
-                const eventId = window.location.pathname.split('/')[2]; // 이벤트 ID 추출
-                console.log("추출된 이벤트 ID:", eventId);
+    </style>
+</head>
+<body>
+    <h1 id="event-name">로딩 중...</h1>
+    <h3 id="login-message">
+        <p style="color: #aaaaaa; font-size: 15px; margin :0px">시간대를 선택하려면 로그인을 해야해요</p>
+    </h3>
 
-                // 로그인 버튼 클릭 시
-                document.getElementById('login-button').addEventListener('click', async function() {
-                    const nickname = document.getElementById('nickname').value;
-                    const password = document.getElementById('password').value;
+    <div class="share-container">
+        <h3 id="copy-message" style="display: none; color: #666666; font-size: 14px; margin-top: 10px;">URL 링크가 복사되었어요! 붙여넣기로 공유해주세요 :D</h3>
+        <button id="copy-url-button" class="button">공유하기</button>
+    </div>
 
-                    if (!nickname || password.length !== 4 || isNaN(password)) {
-                        alert('유효한 닉네임과 4자리 숫자 비밀번호를 입력해주세요.');
-                        return;
-                    }
+    <div id="login-form">
+        <label for="nickname">닉네임 :</label>
+        <input type="text" id="nickname" required>
+        <label for="password">비밀번호 (4자리 숫자) :</label>
+        <input type="password" id="password" maxlength="4" required>
+        <button id="login-button">로그인</button>
+    </div>
+
+    <h2 id="user-message"></h2>
+    <h3 id="selected-participants">색칠된 부분에 마우스를 올리면 참여자의 목록이 나타나요 !</h3>
+
+    <div class="table-container">
+    <table id="time-table">
+        <thead>
+            <tr id="date-header">
+                <th>시간</th>
+            </tr>
+        </thead>
+        <tbody id="time-body">
+        </tbody>
+    </table>
+    </div>
+
+    <button id="save-button" disabled>저장할게요</button>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async function() {
+            let isDragging = false;
+            let dragStartState = false;
+            const selectedSlots = {};
+            let isLoggedIn = false;
+            let userId = null;
+            let nickname = ''; 
+
+            // 페이지 로딩 시 URL에서 이벤트 ID 가져오기
+            const urlParams = new URLSearchParams(window.location.search);
+            const eventId = window.location.pathname.split('/')[2]; // 이벤트 ID 추출
+            console.log("추출된 이벤트 ID:", eventId);
+
+            let nicknameMessage = ''; // 로그인 후 표시할 닉네임 메시지
+            // 로그인 버튼 클릭 시
+            document.getElementById('login-button').addEventListener('click', async function() {
+                const nickname = document.getElementById('nickname').value;
+                const password = document.getElementById('password').value;
+
+                if (!nickname || password.length !== 4 || isNaN(password)) {
+                    alert('유효한 닉네임과 4자리 숫자 비밀번호를 입력해주세요.');
+                    return;
+                }
 
 
-                    try {
-                            const response = await fetch('http://localhost:5000/api/users/login', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                            },
-                            body: JSON.stringify({ nickname, password, eventId }),
-                            });
-                        
-                            const result = await response.json();
-                        
-                            if (response.ok) {
-                            alert(result.message);
-                            userId = result.userId;
-                            document.getElementById('login-form').style.display = 'none';
-                            document.getElementById('save-button').disabled = false;
-                            isLoggedIn = true;
-                        
-                            await fetchEvent();
-                        } else {
-                        alert(result.message);
-                        }
-                    } catch (error) {
-                        console.error("로그인 요청 중 오류 발생:", error);
-                        alert("서버와 통신 중 오류가 발생했어요.");
-                    }
-                });    
-
-                // 이벤트 데이터 가져오기
-                async function fetchEvent() {
-                    console.log("fetchEvent() 호출됨.");
-                    try {
-                        const response = await fetch(`http://localhost:5000/api/events/${eventId}`, {
-                            method: 'GET',
-                            headers: {
-                                'Cache-Control': 'no-cache',
-                                'Pragma': 'no-cache'
-                            }
+                try {
+                        const response = await fetch('http://localhost:5000/api/users/login', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ nickname, password, eventId }),
                         });
-                        console.log("서버 응답 상태 코드:", response.status);
-                        if (response.ok) {
-                            const event = await response.json();
-                            console.log("이벤트 데이터 로드 성공:", event);
-                            document.getElementById('event-name').textContent = `${event.name} (이)라는 이벤트의 시간을 정해요 `;
-
-                            // participants 출력
-                            if (event.participants && event.participants.length > 0) {
-                                console.log("참가자 목록:", event.participants);
-                            }
-
-                            if (event.dates && event.dates.length > 0) {
-                                generateTimeTable(event);
-                                if (isLoggedIn && userId) {
-                                    // 로그인 상태에서 해당 유저의 데이터만 불러오기
-                                    await fetchUserSlots(eventId, userId);
-                                } else {
-                                    // 로그인하지 않은 상태에서 전체 유저의 데이터 불러오기
-                                    await fetchUserAndAllSlots(eventId);
-                                }
-                            } else {
-                                console.error("이벤트에 날짜 데이터가 없습니다.");
-                                alert("이벤트에 날짜 정보가 없어요.");
-                            }
-                        } else {
-                            alert('이벤트 정보를 가져오는 중 오류가 발생했어요.');
-                        }
-                    } catch (error) {
-                        console.error("이벤트 정보를 가져오는 중 오류 발생:", error);
-                        alert('서버와 통신 중 오류가 발생했어요.');
-                    }
-                }
-
-                function generateTimeTable(event) {
-                    const dateHeader = document.getElementById('date-header');
-                    const timeBody = document.getElementById('time-body');
-
-                    if (!dateHeader || !timeBody) {
-                        console.error("dateHeader 또는 timeBody 요소를 찾을 수 없습니다.");
-                        return;
-                    }
-
-                    dateHeader.innerHTML = "<th>시간</th>"; // 기존 헤더 초기화
-                    timeBody.innerHTML = ""; // 기존 시간표 본문 초기화
-
-                    // 날짜들 추가 (헤더 행에 날짜 삽입)
-                    event.dates.forEach(date => {
-                        try {
-                            const formattedDate = new Date(date).toLocaleDateString('ko-KR', { weekday: 'short', month: 'long', day: 'numeric' });
-                            const dateCell = document.createElement('th');
-                            dateCell.textContent = formattedDate;
-                            dateCell.dataset.date = date;
-                            dateHeader.appendChild(dateCell);
-                        } catch (error) {
-                            console.error("날짜 형식 변환 중 오류 발생:", error);
-                        }
-                    });
-
-                    // 시작 시간과 종료 시간 변환
-                    const startTimeParts = event.startTime.split(' ');
-                    if (startTimeParts.length !== 2) {
-                        console.error("시작 시간 형식 오류:", event.startTime);
-                        return; // 잘못된 시간 형식인 경우 함수 종료
-                    }
-
-                    const startPeriod = startTimeParts[1];
-                    const [startHour, startMinutes] = startTimeParts[0].split(':').map(num => parseInt(num, 10));
-
-                    // 종료 시간 변환
-                    const endTimeParts = event.endTime.split(' ');
-                    if (endTimeParts.length !== 2) {
-                        console.error("종료 시간 형식 오류:", event.endTime);
-                        return; // 잘못된 시간 형식인 경우 함수 종료
-                    }
-
-                    const endPeriod = endTimeParts[1];
-                    const [endHour, endMinutes] = endTimeParts[0].split(':').map(num => parseInt(num, 10));
-
-                    // 시간 범위 생성 (30분 간격)
-                    let currentHour = startHour;
-                    let currentMinutes = startMinutes;
-                    let currentPeriod = startPeriod;
-
-                    while (true) {
-                        const row = document.createElement('tr');
-                        const timeCell = document.createElement('td');
-                        const minutesString = currentMinutes === 0 ? '00' : '30';
-                        timeCell.textContent = `${currentPeriod} ${currentHour.toString().padStart(2, '0')}:${minutesString}`;
-                        row.appendChild(timeCell);
-
-                        // 각 날짜에 대한 선택 가능한 칸 생성
-                        event.dates.forEach(date => {
-                            const dateCell = document.createElement('td');
-                            dateCell.className = 'selectable-cell';
-                            dateCell.dataset.date = date;
-                            dateCell.dataset.time = `${currentPeriod} ${currentHour.toString().padStart(2, '0')}:${minutesString}`;
-                            row.appendChild(dateCell);
-                        });
-
-                        timeBody.appendChild(row);
-
-                        // 30분 단위로 시간 증가
-                        if (currentMinutes === 0) {
-                            currentMinutes = 30;
-                        } else {
-                            currentMinutes = 0;
-                            currentHour += 1;
-
-                            if (currentHour === 12) {
-                                currentPeriod = currentPeriod === 'AM' ? 'PM' : 'AM';
-                            } else if (currentHour === 13) {
-                                currentHour = 1;
-                            }
-                        }
-
-                        // 종료 조건
-                        if (currentPeriod === endPeriod && currentHour === endHour && currentMinutes === endMinutes) {
-                            break;
-                        }
-                    }
-                }
-
-                // 선택된 시간대 표시하기
-                function applySelectedSlots(selectedSlots) {
-                    console.log("applySelectedSlots 호출됨:", selectedSlots);
-                    for (const [date, times] of Object.entries(selectedSlots)) {
-                        console.log(`날짜: ${date}, 시간들: ${times}`);
-                        times.forEach(time => {
-                            const cell = document.querySelector(`.selectable-cell[data-date="${date.trim()}"][data-time="${time.trim()}"]`);
-                            if (cell) {
-                                cell.classList.add('selected');
-                            } else {
-                                console.warn("선택된 셀을 찾을 수 없음:", date.trim(), time.trim());
-                            }
-                        });
-                    }
-                }
-
-                function applyAllSlotsWithOpacity(allSlots, totalParticipants) {
-                    const cellCountMap = {}; // 셀별로 몇 명이 선택했는지 저장
-                
-                    // 모든 선택 데이터를 셀별로 집계
-                    allSlots.forEach(slot => {
-                        const { selectedSlots } = slot;
-                        for (const [date, times] of Object.entries(selectedSlots)) {
-                            times.forEach(time => {
-                                const cellKey = `${date}-${time}`;
-                                if (!cellCountMap[cellKey]) {
-                                    cellCountMap[cellKey] = 0;
-                                }
-                                cellCountMap[cellKey] += 1;
-                            });
-                        }
-                    });
-                
-                    // 각 셀에 투명도 적용
-                    const cells = document.querySelectorAll('.selectable-cell');
-                    cells.forEach(cell => {
-                        const date = cell.dataset.date;
-                        const time = cell.dataset.time;
-                        const cellKey = `${date}-${time}`;
-                        const count = cellCountMap[cellKey] || 0; // 선택되지 않았다면 0
-                        const opacity = count / totalParticipants; // 투명도 계산
-                
-                        if (count > 0) {
-                            cell.style.backgroundColor = `rgba(173, 216, 230, ${opacity})`; 
-                        } else {
-                            cell.style.backgroundColor = ''; // 선택되지 않은 셀 초기화
-                        }
-                    });
-                }
-
-                async function fetchAllSlots(eventId) {
-                    try {
-                        const response = await fetch(`http://localhost:5000/api/events/${eventId}/slots`);
-                        if (response.ok) {
-                            const allSlots = await response.json();
-                            const totalParticipants = document.querySelector('#event-name').dataset.participantsCount || 1; // 참가자 수
-                            applyAllSlotsWithOpacity(allSlots, totalParticipants);
-                        } else {
-                            console.error('모든 유저 데이터 로드 실패');
-                        }
-                    } catch (error) {
-                        console.error('모든 유저 데이터 로드 중 오류 발생:', error);
-                    }
-                }
                     
-                // 모든 유저의 시간대 데이터 적용
-                function applyAllSlots(allSlots) {
-                    allSlots.forEach(slot => {
-                        const { userId, selectedSlots } = slot;
-                        for (const [date, times] of Object.entries(selectedSlots)) {
-                            times.forEach(time => {
-                                const cell = document.querySelector(`.selectable-cell[data-date="${date}"][data-time="${time}"]`);
-                                if (cell) {
-                                    // 다른 유저의 시간대로 표시
-                                    cell.classList.add('other-user');
-                                    cell.dataset.userId = userId;
-                                }
-                            });
+                        const result = await response.json();
+                    
+                        if (response.ok) {
+                        alert(result.message);
+                        userId = result.userId;
+                        document.getElementById('login-form').style.display = 'none';
+                        document.getElementById('login-message').style.display = 'none';
+                        document.getElementById('selected-participants').style.display = 'none';
+                        document.getElementById('save-button').disabled = false;
+                        isLoggedIn = true;                
+                        
+                        // 로그인 성공 시 사용자 메시지 표시
+                        document.getElementById('user-message').innerHTML = `
+                        <span style="font-size: 16px; color: #555555; margin-bottom: 40px;">
+                            <span style="color: #ffa4b1;">&nbsp;${nickname}&nbsp;</span>
+                            님의 원하는 시간대를 선택해주세요!
+                        </span>
+                        `;
+                    
+                        await fetchEvent();
+                    } else {
+                    alert(result.message);
+                    }
+                } catch (error) {
+                    console.error("로그인 요청 중 오류 발생:", error);
+                    alert("서버와 통신 중 오류가 발생했어요.");
+                }
+            });    
+
+            // 이벤트 데이터 가져오기
+            async function fetchEvent() {
+                console.log("fetchEvent() 호출됨.");
+                try {
+                    const response = await fetch(`http://localhost:5000/api/events/${eventId}`, {
+                        method: 'GET',
+                        headers: {
+                            'Cache-Control': 'no-cache',
+                            'Pragma': 'no-cache'
+                        }
+                    });
+                    console.log("서버 응답 상태 코드:", response.status);
+                    if (response.ok) {
+                        const event = await response.json();
+                        console.log("이벤트 데이터 로드 성공:", event);
+                        document.getElementById('event-name').innerHTML = `
+                        <span style="color: rgb(135, 206, 235);">${event.name}</span> (이)라는 이벤트의 시간을 정해요`;
+
+                        // participants 출력
+                        if (event.participants && event.participants.length > 0) {
+                            console.log("참여자 목록:", event.participants);
+                        }
+
+                        if (event.dates && event.dates.length > 0) {
+                            generateTimeTable(event);
+                            if (isLoggedIn && userId) {
+                                // 로그인 상태에서 해당 유저의 데이터만 불러오기
+                                await fetchUserSlots(eventId, userId);
+                            } else {
+                                // 로그인하지 않은 상태에서 전체 유저의 데이터 불러오기
+                                await fetchUserAndAllSlots(eventId);
+                            }
+                        } else {
+                            console.error("이벤트에 날짜 데이터가 없습니다.");
+                            alert("이벤트에 날짜 정보가 없어요.");
+                        }
+                    } else {
+                        alert('이벤트 정보를 가져오는 중 오류가 발생했어요.');
+                    }
+                } catch (error) {
+                    console.error("이벤트 정보를 가져오는 중 오류 발생:", error);
+                    alert('서버와 통신 중 오류가 발생했어요.');
+                }
+            }
+
+            function generateTimeTable(event) {
+                const dateHeader = document.getElementById('date-header');
+                const timeBody = document.getElementById('time-body');
+
+                if (!dateHeader || !timeBody) {
+                    console.error("dateHeader 또는 timeBody 요소를 찾을 수 없습니다.");
+                    return;
+                }
+
+                dateHeader.innerHTML = "<th>시간</th>"; // 기존 헤더 초기화
+                timeBody.innerHTML = ""; // 기존 시간표 본문 초기화
+
+                // 날짜들 추가 (헤더 행에 날짜 삽입)
+                event.dates.forEach(date => {
+                    try {
+                        const formattedDate = new Date(date).toLocaleDateString('ko-KR', { weekday: 'short', month: 'long', day: 'numeric' });
+                        const dateCell = document.createElement('th');
+                        dateCell.textContent = formattedDate;
+                        dateCell.dataset.date = date;
+                        dateHeader.appendChild(dateCell);
+                    } catch (error) {
+                        console.error("날짜 형식 변환 중 오류 발생:", error);
+                    }
+                });
+
+                // 시작 시간과 종료 시간 변환
+                const startTimeParts = event.startTime.split(' ');
+                if (startTimeParts.length !== 2) {
+                    console.error("시작 시간 형식 오류:", event.startTime);
+                    return; // 잘못된 시간 형식인 경우 함수 종료
+                }
+
+                const startPeriod = startTimeParts[1];
+                const [startHour, startMinutes] = startTimeParts[0].split(':').map(num => parseInt(num, 10));
+
+                // 종료 시간 변환
+                const endTimeParts = event.endTime.split(' ');
+                if (endTimeParts.length !== 2) {
+                    console.error("종료 시간 형식 오류:", event.endTime);
+                    return; // 잘못된 시간 형식인 경우 함수 종료
+                }
+
+                const endPeriod = endTimeParts[1];
+                const [endHour, endMinutes] = endTimeParts[0].split(':').map(num => parseInt(num, 10));
+
+                // 시간 범위 생성 (30분 간격)
+                let currentHour = startHour;
+                let currentMinutes = startMinutes;
+                let currentPeriod = startPeriod;
+
+                while (true) {
+                    const row = document.createElement('tr');
+                    const timeCell = document.createElement('td');
+                    const minutesString = currentMinutes === 0 ? '00' : '30';
+                    timeCell.textContent = `${currentPeriod} ${currentHour.toString().padStart(2, '0')}:${minutesString}`;
+                    row.appendChild(timeCell);
+
+                    // 각 날짜에 대한 선택 가능한 칸 생성
+                    event.dates.forEach(date => {
+                        const dateCell = document.createElement('td');
+                        dateCell.className = 'selectable-cell';
+                        dateCell.dataset.date = date;
+                        dateCell.dataset.time = `${currentPeriod} ${currentHour.toString().padStart(2, '0')}:${minutesString}`;
+                        row.appendChild(dateCell);
+                    });
+
+                    timeBody.appendChild(row);
+
+                    // 30분 단위로 시간 증가
+                    if (currentMinutes === 0) {
+                        currentMinutes = 30;
+                    } else {
+                        currentMinutes = 0;
+                        currentHour += 1;
+
+                        if (currentHour === 12) {
+                            currentPeriod = currentPeriod === 'AM' ? 'PM' : 'AM';
+                        } else if (currentHour === 13) {
+                            currentHour = 1;
+                        }
+                    }
+
+                    // 종료 조건
+                    if (currentPeriod === endPeriod && currentHour === endHour && currentMinutes === endMinutes) {
+                        break;
+                    }
+                }
+            }
+
+            // 선택된 시간대를 투명도로 표시하기
+            function applySelectedSlots(selectedSlots) {
+                console.log("applySelectedSlots 호출됨:", selectedSlots);
+                for (const [date, times] of Object.entries(selectedSlots)) {
+                    console.log(`날짜: ${date}, 시간들: ${times}`);
+                    times.forEach(time => {
+                        const cell = document.querySelector(`.selectable-cell[data-date="${date.trim()}"][data-time="${time.trim()}"]`);
+                        if (cell) {
+                            cell.classList.add('selected');
+                        } else {
+                            console.warn("선택된 셀을 찾을 수 없음:", date.trim(), time.trim());
                         }
                     });
                 }
+            }
 
-                        async function fetchUserSlots(eventId, userId) {
-                            console.log("fetchUserSlots 호출됨. eventId:", eventId, "userId:", userId); // 디버깅 추가
-                        
-                            try {
-                                const response = await fetch(`http://localhost:5000/api/events/${eventId}/slots/${userId}`);
-                                if (response.ok) {
-                                    const userSlots = await response.json();
-                                    resetTable(); // 기존 선택 상태 초기화
-                                    applyUserSlots(userSlots);
-                                }  else {
-                                    console.warn('유저 데이터가 없습니다. 새 데이터를 생성할 준비를 합니다.');
-                                }
-                            } catch (error) {
-                                console.error('유저 데이터 로드 중 오류 발생:', error);
+            function applyAllSlotsWithOpacity(allSlots, totalParticipants) {
+                const cellCountMap = {}; // 셀별로 몇 명이 선택했는지 저장
+            
+                // 모든 선택 데이터를 셀별로 집계
+                allSlots.forEach(slot => {
+                    const { selectedSlots } = slot;
+                    for (const [date, times] of Object.entries(selectedSlots)) {
+                        times.forEach(time => {
+                            const cellKey = `${date}-${time}`;
+                            if (!cellCountMap[cellKey]) {
+                                cellCountMap[cellKey] = 0;
                             }
-                        }
-                        
-                        // 특정 유저 시간대 적용
-                        function applyUserSlots(userSlots) {
-                            const { selectedSlots } = userSlots;
-                            for (const [date, times] of Object.entries(selectedSlots)) {
-                            times.forEach(time => {
-                                const cell = document.querySelector(`.selectable-cell[data-date="${date}"][data-time="${time}"]`);
-                                if (cell) {
-                                cell.classList.add('selected'); // 해당 유저의 선택 시간대만 표시
-                                }
-                            });
-                            }
-                        }
-                        
-                        // 테이블 초기화
-                        function resetTable() {
-                            const cells = document.querySelectorAll('.selectable-cell');
-                            cells.forEach(cell => {
-                            cell.classList.remove('selected', 'other-user'); // 기존 선택 상태 초기화
-                            cell.style.backgroundColor = ''; // 투명도 초기화
-                            });
-                        } 
-
-                        async function fetchParticipants(eventId) {
-                            try {
-                                const response = await fetch(`http://localhost:5000/api/events/${eventId}/participants`);
-                                if (response.ok) {
-                                    const { participants } = await response.json();
-                                    console.log("참여 중인 유저 목록:", participants);
-                                    // 참가자 목록을 화면에 표시할 수 있음
-                                } else {
-                                    console.error("참가자 목록 로드 실패:", response.status);
-                                }
-                            } catch (error) {
-                                console.error("참가자 목록 로드 중 오류 발생:", error);
-                            }
-                        }
-
-                        async function fetchUserAndAllSlots(eventId, userId) {
-                            // 1. 현재 유저 데이터 로드 및 강조
-                            try {
-                                const response = await fetch(`http://localhost:5000/api/events/${eventId}/slots/${userId}`);
-                                if (response.ok) {
-                                    const userSlots = await response.json();
-                                    resetTable(); // 테이블 초기화
-                                    applySelectedSlots(userSlots.selectedSlots); // 현재 유저 데이터 강조
-                                } else {
-                                    console.warn('현재 유저 데이터가 없습니다. 새 데이터를 생성할 준비를 합니다.');
-                                }
-                            } catch (error) {
-                                console.error('현재 유저 데이터 로드 중 오류 발생:', error);
-                            }
-                        
-                            // 2. 전체 데이터 로드 및 투명도 계산
-                            try {
-                                const response = await fetch(`http://localhost:5000/api/events/${eventId}/slots`);
-                                if (response.ok) {
-                                    const allSlots = await response.json();
-                                    const totalParticipants = allSlots.length || 1; // 전체 참가자 수
-                                    applyAllSlotsWithOpacity(allSlots, totalParticipants); // 투명도 계산
-                                } else {
-                                    console.error('전체 유저 데이터 로드 실패');
-                                }
-                            } catch (error) {
-                                console.error('전체 유저 데이터 로드 중 오류 발생:', error);
-                            }
-                        }
-
-
-
-                // 셀 클릭 및 드래그 이벤트 등록
-                document.getElementById('time-table').addEventListener('mousedown', function(e) {
-                    if (e.target.classList.contains('selectable-cell')) {
-                        if (!isLoggedIn) {
-                            alert('로그인 후에 시간대를 선택할 수 있어요.');
-                            return;
-                        }
-                        isDragging = true;
-                        dragStartState = !e.target.classList.contains('selected');
-                        e.preventDefault();
-                        toggleCellSelection(e.target);
+                            cellCountMap[cellKey] += 1;
+                        });
                     }
                 });
-
-                document.getElementById('time-table').addEventListener('mousemove', function(e) {
-                    if (isDragging && e.target.classList.contains('selectable-cell')) {
-                        if (!isLoggedIn) {
-                            alert('로그인 후에 시간대를 선택할 수 있어요.');
-                            return;
-                        }
-                        if (dragStartState) {
-                            e.target.classList.add('selected');
-                        } else {
-                            e.target.classList.remove('selected');
-                        }
-                    }
-                });
-
-                document.addEventListener('mouseup', function() {
-                    isDragging = false;
-                    dragStartState = null;
-                });
-
-                // 셀 클릭 시 선택 상태 토글
-                document.getElementById('time-table').addEventListener('click', function(e) {
-                    if (e.target.classList.contains('selectable-cell') && !isDragging) {
-                        if (!isLoggedIn) {
-                            alert('로그인 후에 시간대를 선택할 수 있어요.');
-                            return;
-                        }
-                        toggleCellSelection(e.target);
-                    }
-                });
-
-                function toggleCellSelection(cell) {
-                    cell.classList.toggle('selected');
-                }
-
-                document.getElementById('save-button').addEventListener('click', async function () {
-                const updatedSelectedSlots = {};
+            
+                // 각 셀에 투명도 적용
                 const cells = document.querySelectorAll('.selectable-cell');
-
                 cells.forEach(cell => {
                     const date = cell.dataset.date;
                     const time = cell.dataset.time;
-
-                    if (cell.classList.contains('selected')) {
-                    if (!updatedSelectedSlots[date]) {
-                        updatedSelectedSlots[date] = [];
-                    }
-                    updatedSelectedSlots[date].push(time);
+                    const cellKey = `${date}-${time}`;
+                    const count = cellCountMap[cellKey] || 0; // 선택되지 않았다면 0
+                    const opacity = count / totalParticipants; // 투명도 계산
+            
+                    if (count > 0) {
+                        cell.style.backgroundColor = `rgba(135, 206, 235, ${opacity})`; 
+                    } else {
+                        cell.style.backgroundColor = ''; // 선택되지 않은 셀 초기화
                     }
                 });
+            }
 
+            async function fetchAllSlots(eventId) {
                 try {
-                    const responseSave = await fetch('http://localhost:5000/api/save-selected-slots', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ eventId, userId, selectedSlots: updatedSelectedSlots }),
-                    });
+                    const response = await fetch(`http://localhost:5000/api/events/${eventId}/slots`);
+                    if (response.ok) {
+                        const allSlots = await response.json();
+                        const totalParticipants = document.querySelector('#event-name').dataset.participantsCount || 1; // 참여자 수
+                        applyAllSlotsWithOpacity(allSlots, totalParticipants);
+                    } else {
+                        console.error('모든 유저 데이터 로드 실패');
+                    }
+                } catch (error) {
+                    console.error('모든 유저 데이터 로드 중 오류 발생:', error);
+                }
+            }
+                
+            // 모든 유저의 시간대 데이터 적용
+            function applyAllSlots(allSlots) {
+                allSlots.forEach(slot => {
+                    const { userId, selectedSlots } = slot;
+                    for (const [date, times] of Object.entries(selectedSlots)) {
+                        times.forEach(time => {
+                            const cell = document.querySelector(`.selectable-cell[data-date="${date}"][data-time="${time}"]`);
+                            if (cell) {
+                                // 다른 유저의 시간대로 표시
+                                cell.classList.add('other-user');
+                                cell.dataset.userId = userId;
+                            }
+                        });
+                    }
+                });
+            }
 
-                    if (responseSave.ok) {
+                    async function fetchUserSlots(eventId, userId) {
+                        console.log("fetchUserSlots 호출됨. eventId:", eventId, "userId:", userId); // 디버깅 추가
+                    
+                        try {
+                            const response = await fetch(`http://localhost:5000/api/events/${eventId}/slots/${userId}`);
+                            if (response.ok) {
+                                const userSlots = await response.json();
+                                resetTable(); // 기존 선택 상태 초기화
+                                applyUserSlots(userSlots);
+                            }  else {
+                                console.warn('유저 데이터가 없습니다. 새 데이터를 생성할 준비를 합니다.');
+                            }
+                        } catch (error) {
+                            console.error('유저 데이터 로드 중 오류 발생:', error);
+                        }
+                    }
+                    
+                    // 특정 유저 시간대 적용
+                    function applyUserSlots(userSlots) {
+                        const { selectedSlots } = userSlots;
+                        for (const [date, times] of Object.entries(selectedSlots)) {
+                        times.forEach(time => {
+                            const cell = document.querySelector(`.selectable-cell[data-date="${date}"][data-time="${time}"]`);
+                            if (cell) {
+                            cell.classList.add('selected'); // 해당 유저의 선택 시간대만 표시
+                            }
+                        });
+                        }
+                    }
+                    
+                    // 테이블 초기화
+                    function resetTable() {
+                        const cells = document.querySelectorAll('.selectable-cell');
+                        cells.forEach(cell => {
+                        cell.classList.remove('selected', 'other-user'); // 기존 선택 상태 초기화
+                        cell.style.backgroundColor = ''; // 투명도 초기화
+                        });
+                    } 
+
+                    // 로드 오류 발생
+                    async function fetchParticipants(eventId) {
+                        try {
+                            const response = await fetch(`http://localhost:5000/api/events/${eventId}/participants`);
+                            if (response.ok) {
+                                const { participants } = await response.json();
+                                console.log("참여 중인 유저 목록:", participants);
+                                // 참여자 목록을 화면에 표시할 수 있음
+                            } else {
+                                console.error("참여자 목록 로드 실패:", response.status);
+                            }
+                        } catch (error) {
+                            console.error("참여자 목록 로드 중 오류 발생:", error);
+                        }
+                    }
+
+                    async function fetchUserAndAllSlots(eventId, userId) {
+                        // 1. 현재 유저 데이터 로드 및 강조
+                        try {
+                            const response = await fetch(`http://localhost:5000/api/events/${eventId}/slots/${userId}`);
+                            if (response.ok) {
+                                const userSlots = await response.json();
+                                resetTable(); // 테이블 초기화
+                                applySelectedSlots(userSlots.selectedSlots); // 현재 유저 데이터 강조
+                            } else {
+                                console.warn('현재 유저 데이터가 없습니다. 새 데이터를 생성할 준비를 합니다.');
+                            }
+                        } catch (error) {
+                            console.error('현재 유저 데이터 로드 중 오류 발생:', error);
+                        }
+                    
+                        // 2. 전체 데이터 로드 및 투명도 계산
+                        try {
+                            const response = await fetch(`http://localhost:5000/api/events/${eventId}/slots`);
+                            if (response.ok) {
+                                const allSlots = await response.json();
+                                const totalParticipants = allSlots.length || 1; // 전체 참여자 수
+                                applyAllSlotsWithOpacity(allSlots, totalParticipants); // 투명도 계산
+                            } else {
+                                console.error('전체 유저 데이터 로드 실패');
+                            }
+                        } catch (error) {
+                            console.error('전체 유저 데이터 로드 중 오류 발생:', error);
+                        }
+                    }
+
+
+
+            // 셀 클릭 및 드래그 이벤트 등록
+            document.getElementById('time-table').addEventListener('mousedown', function(e) {
+                if (e.target.classList.contains('selectable-cell')) {
+                    if (!isLoggedIn) {
+                        alert('로그인 후에 시간대를 선택할 수 있어요.');
+                        return;
+                    }
+                    isDragging = true;
+                    dragStartState = !e.target.classList.contains('selected');
+                    e.preventDefault();
+                    toggleCellSelection(e.target);
+                }
+            });
+
+            document.getElementById('time-table').addEventListener('mousemove', function(e) {
+                if (isDragging && e.target.classList.contains('selectable-cell')) {
+                    if (!isLoggedIn) {
+                        alert('로그인 후에 시간대를 선택할 수 있어요.');
+                        return;
+                    }
+                    if (dragStartState) {
+                        e.target.classList.add('selected');
+                    } else {
+                        e.target.classList.remove('selected');
+                    }
+                }
+            });
+
+            document.addEventListener('mouseup', function() {
+                isDragging = false;
+                dragStartState = null;
+            });
+
+            // 셀 클릭 시 선택 상태 토글
+            document.getElementById('time-table').addEventListener('click', function(e) {
+                if (e.target.classList.contains('selectable-cell') && !isDragging) {
+                    if (!isLoggedIn) {
+                        alert('로그인 후에 시간대를 선택할 수 있어요.');
+                        return;
+                    }
+                    toggleCellSelection(e.target);
+                }
+            });
+
+            // 셀에 마우스를 올릴 때 참여자 목록 표시
+            document.getElementById('time-table').addEventListener('mouseover', async function (e) {
+                if (e.target.classList.contains('selectable-cell')) {
+                    const date = e.target.dataset.date;
+                    const time = e.target.dataset.time;
+
+                    try {
+                        const response = await fetch(`http://localhost:5000/api/events/${eventId}/participants?date=${encodeURIComponent(date)}&time=${encodeURIComponent(time)}`);
+                        if (response.ok) {
+                            const data = await response.json(); // 전체 응답 데이터
+                            const participants = data.participants; // participants 배열 추출
+                    
+                            if (Array.isArray(participants) && participants.length > 0) {
+                                const participantNames = participants.join(', ');
+                                document.getElementById('selected-participants').innerHTML = `
+                                <span style="font-size : 16px";> 이 시간대를 선택한 참여자에요: 
+                                    <span style="color: #ffa4b1";>${participantNames}</span>
+                                </span>
+                                `;
+                            } else {
+                                // participants 배열이 비어있는 경우
+                                document.getElementById('selected-participants').textContent = '해당 시간대를 선택한 참여자가 없어요';
+                            }
+                        } else {
+                            // 서버 응답이 실패한 경우
+                            console.warn('참여자 정보를 가져오는 데 실패했습니다.', response.status);
+                            document.getElementById('selected-participants').textContent = '참여자 정보를 가져오는 데 실패했어요';
+                        }
+                    } catch (error) {
+                        // 네트워크 오류 또는 기타 예외 발생
+                        console.error('참여자 정보 로드 중 오류 발생:', error);
+                        document.getElementById('selected-participants').textContent = '참여자 정보를 가져오는 데 실패했어요';
+                    }
+                }
+            });
+
+            // 셀에서 마우스를 벗어날 때 텍스트 초기화
+            document.getElementById('time-table').addEventListener('mouseout', function (e) {
+                if (e.target.classList.contains('selectable-cell')) {
+                    document.getElementById('selected-participants').textContent = '색칠된 부분에 마우스를 올리면 참여자의 목록이 나타나요 !';
+                }
+            });
+
+            function toggleCellSelection(cell) {
+                cell.classList.toggle('selected');
+            }
+
+            // 선택한 셀 저장
+            document.getElementById('save-button').addEventListener('click', async function () {
+            const updatedSelectedSlots = {};
+            const cells = document.querySelectorAll('.selectable-cell');
+
+            cells.forEach(cell => {
+                const date = cell.dataset.date;
+                const time = cell.dataset.time;
+
+                if (cell.classList.contains('selected')) {
+                if (!updatedSelectedSlots[date]) {
+                    updatedSelectedSlots[date] = [];
+                }
+                updatedSelectedSlots[date].push(time);
+                }
+            });
+
+            try {
+                const responseSave = await fetch('http://localhost:5000/api/save-selected-slots', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ eventId, userId, selectedSlots: updatedSelectedSlots }),
+                });
+
+                if (responseSave.ok) {
                     alert('선택된 시간대를 성공적으로 저장했어요.');
+                    location.reload();
                     } else {
                     alert('시간대 저장에 실패했어요.');
                     }
@@ -640,10 +763,28 @@
                 }
                 });
 
+            // URL 복사 버튼 이벤트
+            document.getElementById('copy-url-button').addEventListener('click', function () {
+                const currentUrl = `${window.location.origin}${window.location.pathname}`;
+                
+                // 클립보드에 URL 복사
+                navigator.clipboard.writeText(currentUrl).then(() => {
+                    const message = document.getElementById('copy-message');
+                    message.style.display = 'block'; // 성공 메시지 표시
 
-                // 이벤트 데이터 가져오기 호출
-                fetchEvent();
+                    // 2초 후 메시지 숨기기
+                    setTimeout(() => {
+                        message.style.display = 'none';
+                    }, 2000);
+                }).catch(err => {
+                    alert('URL 복사에 실패했어요. 브라우저를 확인해주세요.');
+                    console.error('복사 실패:', err);
+                });
             });
-        </script>
-    </body>
-    </html>
+
+            // 이벤트 데이터 가져오기 호출
+            fetchEvent();
+        });
+    </script>
+</body>
+</html>

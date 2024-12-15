@@ -240,6 +240,25 @@
             });
         });
 
+        fetch('http://34.55.162.62:5000/api/events')  
+        .then(response => response.json())
+        .then(data => {
+            console.log('서버에서 받은 데이터:', data);
+            // 데이터를 HTML에 표시
+            const container = document.createElement('div');
+            container.innerText = JSON.stringify(data, null, 2);
+            container.style.fontFamily = "monospace";
+            container.style.whiteSpace = "pre-wrap";
+            document.body.appendChild(container);
+        })
+        .catch(error => {
+            console.error('서버 통신 오류:', error);
+            const errorContainer = document.createElement('div');
+            errorContainer.innerText = '데이터를 불러오는 중 오류가 발생했습니다.';
+            errorContainer.style.color = "red";
+            document.body.appendChild(errorContainer);
+        });
+
         let selectedDates = [];
         document.addEventListener('DOMContentLoaded', function () {
             flatpickr("#event-dates", {

@@ -183,11 +183,11 @@ app.get('/api/events/:id/participants', async (req, res) => {
 // ====== 정적 파일 및 HTML 제공 ======
 // HTML 파일 제공
 app.get('/home', (req, res) => {
-  res.sendFile(path.join(__dirname, 'home.html'));
+  res.sendFile(path.join(__dirname, 'public', 'home.html'));
 });
 
 app.get('/select', (req, res) => {
-  res.sendFile(path.join(__dirname, 'select.html'));
+  res.sendFile(path.join(__dirname, 'public', 'select.html'));
 });
 
 // 이벤트 조회 라우트
@@ -299,13 +299,10 @@ app.get('/api/events/:id/participants', async (req, res) => {
   }
 });
 
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'home.html'));
-});
 
 
 // ====== 서버 실행 ======
 const PORT = 5000;
-app.listen(PORT, '0.0.0.0', () => { // '0.0.0.0'은 모든 네트워크 인터페이스를 허용
+app.listen(PORT, () => {
   console.log(`서버가 포트 ${PORT}에서 실행 중입니다.`);
 });

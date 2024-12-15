@@ -782,30 +782,6 @@
                 });
             });
 
-
-            async function fetchEvent() {
-                console.log("fetchEvent() 호출됨.");
-                try {
-                    const response = await fetch(`http://34.55.162.62:5000/api/events`);
-                    if (response.ok) {
-                        const data = await response.json();
-                        console.log('서버에서 받은 데이터:', data);
-                        // 데이터를 화면에 표시
-                        const eventContainer = document.createElement('div');
-                        eventContainer.style.margin = "20px";
-                        eventContainer.style.color = "black";
-                        eventContainer.style.fontSize = "14px";
-                        eventContainer.textContent = JSON.stringify(data, null, 2); // JSON 데이터를 문자열로 변환
-                        document.body.appendChild(eventContainer);
-                    } else {
-                        console.warn("서버 응답 실패:", response.status);
-                        alert('데이터를 가져오는 중 오류가 발생했어요.');
-                    }
-                } catch (error) {
-                    console.error('서버 통신 오류:', error);
-                    alert('서버와 통신 중 오류가 발생했어요.');
-                }
-            }
             // 이벤트 데이터 가져오기 호출
             fetchEvent();
         });

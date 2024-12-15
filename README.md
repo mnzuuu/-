@@ -1,4 +1,4 @@
-![WEMEET.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/d15b74bf-97b2-4665-84e7-1386c12a62a9/e7824295-dfd4-4d72-b5d3-b3011ad89e2f/WEMEET.png)
+![WEMEET](https://github.com/user-attachments/assets/e8c0a770-16f6-4dfd-9b64-77238d59fe11)
 
 🕓**WEMEET**🕓은 여러 사람들과 간단하고 빠르게 일정을 조율할 수 있도록 만들어진 서비스예요.
 
@@ -11,9 +11,6 @@
 1. **이벤트를 만들어요**
     - 이벤트 이름, 날짜, 시간대를 입력해서 새 이벤트를 만들어요.
     - 생성된 이벤트는 고유한 링크를 통해 공유할 수 있어요.
-
-![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/d15b74bf-97b2-4665-84e7-1386c12a62a9/3d3fddac-1ecb-446a-b6e1-f4f74f45254d/image.png)
-
 1. **간단하게 로그인해요**
     - 닉네임과 비밀번호만 입력하면 간단하게 이벤트에 참여할 수 있어요.
 2. **원하는 시간대를 보여줘요**
